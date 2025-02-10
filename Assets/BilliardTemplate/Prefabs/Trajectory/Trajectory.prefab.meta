@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 0c95eb61e0a68ed41afdd1b8f4159f5e
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 236246
+  packageName: Billiard Template
+  packageVersion: 1.1
+  assetPath: Assets/BilliardTemplate/Prefabs/Trajectory/Trajectory.prefab
+  uploadId: 599015

@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 4fcd2a36073539b4496c408406ac96e8
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 236246
+  packageName: Billiard Template
+  packageVersion: 1.1
+  assetPath: Assets/BilliardTemplate/Art/Materials/Cue.mat
+  uploadId: 599015

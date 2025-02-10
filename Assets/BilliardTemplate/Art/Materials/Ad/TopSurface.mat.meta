@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: eeea25db954feed4bbfed2f45b83bdf3
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 236246
+  packageName: Billiard Template
+  packageVersion: 1.1
+  assetPath: Assets/BilliardTemplate/Art/Materials/Ad/TopSurface.mat
+  uploadId: 599015

@@ -1,0 +1,180 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &8311679258686538334
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8311679258686538335}
+  - component: {fileID: 8311679258686538328}
+  - component: {fileID: 8311679258686538324}
+  - component: {fileID: 8311679258686538331}
+  - component: {fileID: 8311679258686538330}
+  - component: {fileID: 8311679258686538329}
+  m_Layer: 0
+  m_Name: Billiard
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8311679258686538335
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8311679258686538334}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8311679258686538328
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8311679258686538334}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5ac1a08afff3414a8ff9559f5466e5e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _selectedBallId: 0
+  _selectedCueStickId: 0
+  _frezeBallsOutsidePlayingAreaRadius: 1
+  _jobConstants: {fileID: 11400000, guid: 65a0eac2d59c25948869e861ae3acdd3, type: 2}
+  _solverConstants: {fileID: 11400000, guid: 275f779716d7e344f9d9450fd49e2aee, type: 2}
+  _whiteBallIdentifier: 0
+  _blackBallIdentifier: 8
+--- !u!114 &8311679258686538324
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8311679258686538334}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f1850377d58e45b9be31b0ed168ce006, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _cameraController: {fileID: 8311679258686538331}
+  _menuCameraController: {fileID: 8311679258686538331}
+  _cueController: {fileID: 8311679258686538330}
+  _billiard: {fileID: 8311679258686538328}
+  _playerInput: {fileID: 8311679258686538329}
+  _modes:
+  - {fileID: 11400000, guid: 834b931bfd8ce0743931b799a7a209e2, type: 2}
+  - {fileID: 11400000, guid: 450a61b07861cc84ab0ce2a45c182c99, type: 2}
+  - {fileID: 11400000, guid: 4d42e552bc573894caaaffd88d37c6bb, type: 2}
+  - {fileID: 11400000, guid: fe532e6c3af505941842453328007b2c, type: 2}
+  - {fileID: 11400000, guid: 3a9221c99ba8216478bea9565af28def, type: 2}
+--- !u!114 &8311679258686538331
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8311679258686538334}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c92a14ccb10cee246ba0135b68f770ee, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _data: {fileID: 11400000, guid: 9419bc9fdec510f4e802f930cc734b62, type: 2}
+  _cam: {fileID: 0}
+  _target: {x: 0, y: 0, z: 0}
+  _distance: 1
+  _jaw: 0
+  _pitch: 0
+--- !u!114 &8311679258686538330
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8311679258686538334}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4b516ed22d771c64190309156151ae5b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _billiard: {fileID: 8311679258686538328}
+  _data: {fileID: 11400000, guid: be88e06ee7dab0646860fad8f6df8528, type: 2}
+  _cueTransform:
+    Center:
+      x: 0
+      y: 0
+      z: 0
+    Offset:
+      x: 0
+      y: 0
+      z: 0
+    Jaw: 0
+    Pitch: 0
+  _strikeCommandCached:
+    BallIdentifier: 0
+    Velocity: 0
+    Cue:
+      Identifier: 0
+      Mass: 0
+      Length: 0
+      Radius: 0
+      ImpactParameters:
+        NormalRestitution: 0
+        TangentialRestitution: 0
+        Friction: 0
+      Inertia: 0
+      InverseInertia: 0
+      InverseMass: 0
+    Transform:
+      Center:
+        x: 0
+        y: 0
+        z: 0
+      Offset:
+        x: 0
+        y: 0
+        z: 0
+      Jaw: 0
+      Pitch: 0
+    MinimumPitch: 0
+--- !u!114 &8311679258686538329
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8311679258686538334}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62899f850307741f2a39c98a8b639597, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Actions: {fileID: -944628639613478452, guid: 2827b1265d6100048a8c3cf9c770d952, type: 3}
+  m_NotificationBehavior: 0
+  m_UIInputModule: {fileID: 0}
+  m_DeviceLostEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_DeviceRegainedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_ControlsChangedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_ActionEvents: []
+  m_NeverAutoSwitchControlSchemes: 0
+  m_DefaultControlScheme: 
+  m_DefaultActionMap: Player
+  m_SplitScreenIndex: -1
+  m_Camera: {fileID: 0}

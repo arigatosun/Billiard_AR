@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: aa01ad6c418d78e47843d2f41884f6d6
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 236246
+  packageName: Billiard Template
+  packageVersion: 1.1
+  assetPath: Assets/BilliardTemplate/Prefabs/UI/ConsoleLog.prefab
+  uploadId: 599015

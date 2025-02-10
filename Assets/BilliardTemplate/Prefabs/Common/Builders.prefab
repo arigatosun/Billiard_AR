@@ -1,0 +1,92 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &3858671032111412059
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3858671032111412053}
+  - component: {fileID: 3858671032111412058}
+  - component: {fileID: 3858671032111412052}
+  m_Layer: 0
+  m_Name: Builders
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3858671032111412053
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3858671032111412059}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3858671032111412058
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3858671032111412059}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7beba549e9efa9845a0abe67c24b788d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  BallRadius: 0.028575
+  MidPocketAngle: 80
+  MidPocketMouthSize: 0.117
+  CornerPocketMouthSize: 0.117
+  CornerPocketAngle: 45
+  CushionDepth: 0.055
+  TableWidth: 2.24
+  TableHeight: 1.12
+  WhiteBallOffset: 1.25
+  HoleRadius: 0.05
+  HoleHeight: 0.2
+--- !u!114 &3858671032111412052
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3858671032111412059}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d1f292d6c80bbb745b9119e2328fae51, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _seed: 0
+  _mesh: {fileID: 7398509403596113055, guid: 98817fc7971a12843b4a72f56d71aa80, type: 3}
+  _ballRadius: 0.028575
+  _ballMass: 0.156
+  _ballScaleFactor: 50
+  _materials:
+  - {fileID: 2100000, guid: 6f406b5b8df88284ea507e2a9429a569, type: 2}
+  - {fileID: 2100000, guid: b094901b93e216843955bc2fdaf5ec42, type: 2}
+  - {fileID: 2100000, guid: ba7fc4de9499d2340853fd2ee8fdd6b9, type: 2}
+  - {fileID: 2100000, guid: 92de1687c4a768240a33b1c1282ea0ec, type: 2}
+  - {fileID: 2100000, guid: 39707b41651e88344b46439866a6f330, type: 2}
+  - {fileID: 2100000, guid: 3fdac7bbe1463d24380c5590401b7986, type: 2}
+  - {fileID: 2100000, guid: eef1ff22836af8b45bed7abde8c69a56, type: 2}
+  - {fileID: 2100000, guid: 743942cf5a8e1a645831734cd5f40ce6, type: 2}
+  - {fileID: 2100000, guid: b2a2b0d047d2e6449a873cbc9a06d0a8, type: 2}
+  - {fileID: 2100000, guid: 8815635f4c178b34495bde6eb4b9d86e, type: 2}
+  - {fileID: 2100000, guid: 11b41b7cab4561f4385c609c33745fe1, type: 2}
+  - {fileID: 2100000, guid: af70cfcc2e975a648b7e3f4711b797f6, type: 2}
+  - {fileID: 2100000, guid: cdb47a3febb2de24188298bed1c6d4db, type: 2}
+  - {fileID: 2100000, guid: d91dbc1e2854d2e449a8219a9d0245fa, type: 2}
+  - {fileID: 2100000, guid: 3f1250c709f75234e80715c076e82258, type: 2}
+  - {fileID: 2100000, guid: 76d3cfb2d34ce82409a7107137e97238, type: 2}

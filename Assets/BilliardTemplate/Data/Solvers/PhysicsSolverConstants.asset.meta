@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 275f779716d7e344f9d9450fd49e2aee
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 11400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 236246
+  packageName: Billiard Template
+  packageVersion: 1.1
+  assetPath: Assets/BilliardTemplate/Data/Solvers/PhysicsSolverConstants.asset
+  uploadId: 599015

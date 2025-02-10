@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 2fdb1a6ef984622499ea8b4050ac66b2
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 236246
+  packageName: Billiard Template
+  packageVersion: 1.1
+  assetPath: Assets/BilliardTemplate/Prefabs/Common/Ball.prefab
+  uploadId: 599015

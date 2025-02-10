@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: be88e06ee7dab0646860fad8f6df8528
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 11400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 236246
+  packageName: Billiard Template
+  packageVersion: 1.1
+  assetPath: Assets/BilliardTemplate/Data/Controllers/Cue Data.asset
+  uploadId: 599015

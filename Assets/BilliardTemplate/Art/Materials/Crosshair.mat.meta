@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: eac8d6fd69c14404dbd06ff52dcd0df7
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 236246
+  packageName: Billiard Template
+  packageVersion: 1.1
+  assetPath: Assets/BilliardTemplate/Art/Materials/Crosshair.mat
+  uploadId: 599015

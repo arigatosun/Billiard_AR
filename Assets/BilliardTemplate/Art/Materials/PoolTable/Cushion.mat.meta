@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 9a90d010dc0b7a94aa038f5b403ff4d5
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 236246
+  packageName: Billiard Template
+  packageVersion: 1.1
+  assetPath: Assets/BilliardTemplate/Art/Materials/PoolTable/Cushion.mat
+  uploadId: 599015

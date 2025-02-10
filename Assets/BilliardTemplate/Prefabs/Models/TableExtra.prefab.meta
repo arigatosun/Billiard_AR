@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 366f19586b7cb7a45ab15b9a9ec22e66
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 236246
+  packageName: Billiard Template
+  packageVersion: 1.1
+  assetPath: Assets/BilliardTemplate/Prefabs/Models/TableExtra.prefab
+  uploadId: 599015
