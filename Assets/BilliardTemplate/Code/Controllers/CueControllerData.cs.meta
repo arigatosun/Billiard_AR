@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 86d9b77c802f0714986e23fbd39ba655
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 236246
+  packageName: Billiard Template
+  packageVersion: 1.1
+  assetPath: Assets/BilliardTemplate/Code/Controllers/CueControllerData.cs
+  uploadId: 599015

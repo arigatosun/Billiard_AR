@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 7c817148bddff5d45b725742c4054e47
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 236246
+  packageName: Billiard Template
+  packageVersion: 1.1
+  assetPath: Assets/BilliardTemplate/Code/Modes/Perspective/ShotMode.cs
+  uploadId: 599015

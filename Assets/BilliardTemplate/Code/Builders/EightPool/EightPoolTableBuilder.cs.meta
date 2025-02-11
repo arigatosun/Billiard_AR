@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 7beba549e9efa9845a0abe67c24b788d
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 236246
+  packageName: Billiard Template
+  packageVersion: 1.1
+  assetPath: Assets/BilliardTemplate/Code/Builders/EightPool/EightPoolTableBuilder.cs
+  uploadId: 599015

@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 66aac7819d996c74283309af2e4288da
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 236246
+  packageName: Billiard Template
+  packageVersion: 1.1
+  assetPath: Assets/BilliardTemplate/Code/Builders/BilliardData.cs
+  uploadId: 599015

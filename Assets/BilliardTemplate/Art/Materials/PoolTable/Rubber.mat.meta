@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 71e4bf4992465044493b1732c04c84d5
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 236246
+  packageName: Billiard Template
+  packageVersion: 1.1
+  assetPath: Assets/BilliardTemplate/Art/Materials/PoolTable/Rubber.mat
+  uploadId: 599015

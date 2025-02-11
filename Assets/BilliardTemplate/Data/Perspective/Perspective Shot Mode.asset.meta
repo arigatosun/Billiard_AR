@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: fe532e6c3af505941842453328007b2c
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 11400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 236246
+  packageName: Billiard Template
+  packageVersion: 1.1
+  assetPath: Assets/BilliardTemplate/Data/Perspective/Perspective Shot Mode.asset
+  uploadId: 599015

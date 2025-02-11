@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: d306c8997bf8cd84284c578ac78f6806
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 236246
+  packageName: Billiard Template
+  packageVersion: 1.1
+  assetPath: Assets/BilliardTemplate/Prefabs/Models/Crosshair.prefab
+  uploadId: 599015

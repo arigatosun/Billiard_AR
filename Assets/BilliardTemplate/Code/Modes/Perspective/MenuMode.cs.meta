@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 379a99256c8dd274785d4f01af70d5ee
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 236246
+  packageName: Billiard Template
+  packageVersion: 1.1
+  assetPath: Assets/BilliardTemplate/Code/Modes/Perspective/MenuMode.cs
+  uploadId: 599015

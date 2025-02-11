@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 2e7f2d39dd986474496630b114b7d9af
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 236246
+  packageName: Billiard Template
+  packageVersion: 1.1
+  assetPath: Assets/BilliardTemplate/Code/Solvers/PhysicsSolverConstantsSerializable.cs
+  uploadId: 599015

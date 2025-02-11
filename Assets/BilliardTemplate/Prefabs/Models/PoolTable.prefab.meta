@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 020d6b9d107d58b45b5582d96050b0e2
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 236246
+  packageName: Billiard Template
+  packageVersion: 1.1
+  assetPath: Assets/BilliardTemplate/Prefabs/Models/PoolTable.prefab
+  uploadId: 599015

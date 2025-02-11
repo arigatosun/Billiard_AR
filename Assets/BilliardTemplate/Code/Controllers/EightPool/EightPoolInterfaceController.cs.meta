@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 72d610d98131e2a48ab3228a030f91eb
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 236246
+  packageName: Billiard Template
+  packageVersion: 1.1
+  assetPath: Assets/BilliardTemplate/Code/Controllers/EightPool/EightPoolInterfaceController.cs
+  uploadId: 599015

@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: d9462f71374b2cd4ca2ce4619cbd41b3
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 236246
+  packageName: Billiard Template
+  packageVersion: 1.1
+  assetPath: Assets/BilliardTemplate/Code/Unity/UnityCue.cs
+  uploadId: 599015

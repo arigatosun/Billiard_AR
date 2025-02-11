@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 9fffecd0c79663442a04f8b74f177f3f
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 236246
+  packageName: Billiard Template
+  packageVersion: 1.1
+  assetPath: Assets/BilliardTemplate/Prefabs/Trajectory/BallGhost.prefab
+  uploadId: 599015

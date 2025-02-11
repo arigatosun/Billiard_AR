@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: e6629a25abcca8d4ba116e2fa8178c2e
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 236246
+  packageName: Billiard Template
+  packageVersion: 1.1
+  assetPath: Assets/BilliardTemplate/Art/Materials/Ad/SmallFontColor.mat
+  uploadId: 599015

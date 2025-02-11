@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: e5d9c9f31cad859449faa2be087d8f8a
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 236246
+  packageName: Billiard Template
+  packageVersion: 1.1
+  assetPath: Assets/BilliardTemplate/Code/Unity/UnityPolygon.cs
+  uploadId: 599015

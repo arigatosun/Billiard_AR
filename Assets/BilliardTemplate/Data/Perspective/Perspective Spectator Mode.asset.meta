@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 3a9221c99ba8216478bea9565af28def
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 11400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 236246
+  packageName: Billiard Template
+  packageVersion: 1.1
+  assetPath: Assets/BilliardTemplate/Data/Perspective/Perspective Spectator Mode.asset
+  uploadId: 599015

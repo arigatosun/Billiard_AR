@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: b0c72c71b5a93bf4390d49cb3d58d76f
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 236246
+  packageName: Billiard Template
+  packageVersion: 1.1
+  assetPath: Assets/BilliardTemplate/Prefabs/Models/Cue.prefab
+  uploadId: 599015

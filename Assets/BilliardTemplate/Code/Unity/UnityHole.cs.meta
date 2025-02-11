@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 8dfc04f3656425145b16a5aad2b5d2c5
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 236246
+  packageName: Billiard Template
+  packageVersion: 1.1
+  assetPath: Assets/BilliardTemplate/Code/Unity/UnityHole.cs
+  uploadId: 599015

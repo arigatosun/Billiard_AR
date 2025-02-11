@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 94f989d5d24e6ed4488fb12ed65b81d5
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 236246
+  packageName: Billiard Template
+  packageVersion: 1.1
+  assetPath: Assets/BilliardTemplate/Code/Controllers/TrajectoryController.cs
+  uploadId: 599015

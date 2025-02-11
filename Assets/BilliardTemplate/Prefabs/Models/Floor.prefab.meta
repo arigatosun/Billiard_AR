@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 65bc903b5d21d2f458e32db7cf75bec1
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 236246
+  packageName: Billiard Template
+  packageVersion: 1.1
+  assetPath: Assets/BilliardTemplate/Prefabs/Models/Floor.prefab
+  uploadId: 599015

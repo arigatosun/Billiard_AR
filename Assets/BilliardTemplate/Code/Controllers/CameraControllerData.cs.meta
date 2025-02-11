@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 4bfcc1d1b20186e41a58016d51887be1
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 236246
+  packageName: Billiard Template
+  packageVersion: 1.1
+  assetPath: Assets/BilliardTemplate/Code/Controllers/CameraControllerData.cs
+  uploadId: 599015

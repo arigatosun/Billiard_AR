@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 0857943cd78c38c4bbd2ab993097710c
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 236246
+  packageName: Billiard Template
+  packageVersion: 1.1
+  assetPath: Assets/BilliardTemplate/Prefabs/Common/Builders.prefab
+  uploadId: 599015

@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: fa78f04369bf5c5429ff8eacc71ee45d
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 236246
+  packageName: Billiard Template
+  packageVersion: 1.1
+  assetPath: Assets/BilliardTemplate/Code/Utility/Triangulator.cs
+  uploadId: 599015

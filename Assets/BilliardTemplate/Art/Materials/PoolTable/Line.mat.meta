@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: ed135ab4ecc53f345bbbfd19ea43a54a
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 236246
+  packageName: Billiard Template
+  packageVersion: 1.1
+  assetPath: Assets/BilliardTemplate/Art/Materials/PoolTable/Line.mat
+  uploadId: 599015

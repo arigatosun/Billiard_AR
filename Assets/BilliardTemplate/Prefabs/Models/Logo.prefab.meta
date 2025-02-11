@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 1a1b85d48e955a349935c66bbb18dec5
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 236246
+  packageName: Billiard Template
+  packageVersion: 1.1
+  assetPath: Assets/BilliardTemplate/Prefabs/Models/Logo.prefab
+  uploadId: 599015

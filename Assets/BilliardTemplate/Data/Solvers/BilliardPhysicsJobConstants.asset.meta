@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 65a0eac2d59c25948869e861ae3acdd3
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 11400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 236246
+  packageName: Billiard Template
+  packageVersion: 1.1
+  assetPath: Assets/BilliardTemplate/Data/Solvers/BilliardPhysicsJobConstants.asset
+  uploadId: 599015

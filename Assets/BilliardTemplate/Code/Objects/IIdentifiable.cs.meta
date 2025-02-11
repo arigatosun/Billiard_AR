@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: b4bf30cf8b0ea3b408885ac76dfe07fe
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 236246
+  packageName: Billiard Template
+  packageVersion: 1.1
+  assetPath: Assets/BilliardTemplate/Code/Objects/IIdentifiable.cs
+  uploadId: 599015
