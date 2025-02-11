@@ -4,7 +4,7 @@
 PlayerSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 28
-  productGUID: 00000000000000000000000000000000
+  productGUID: 4dddb5115146c2049a1631183f97f5b2
   AndroidProfiler: 0
   AndroidFilterTouchesWhenObscured: 0
   AndroidEnableSustainedPerformanceMode: 0
@@ -867,7 +867,7 @@ PlayerSettings:
   cloudProjectId: d6d9a2ab-13ca-4258-87b5-55f2df40950b
   framebufferDepthMemorylessMode: 0
   qualitySettingsNames: []
-  projectName: 
+  projectName: Billiard_AR 2025-02-10_19-53-12
   organizationId: arigatosun-llc
   cloudEnabled: 0
   legacyClampBlendShapeWeights: 0
