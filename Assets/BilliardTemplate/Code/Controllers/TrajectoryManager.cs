@@ -1,7 +1,3 @@
-/*
- *  Created by Dragutin Sredojevic.
- *  https://www.nitugard.com
- */
 using System;
 using Unity.Mathematics;
 using UnityEngine;
@@ -14,30 +10,28 @@ namespace ibc.controller
     /// <summary>Class that manages ball trajectory display.</summary>
     public class TrajectoryManager : MonoBehaviour
     {
-        //Cue controller reference
+        // (省略 - 既存の変数はそのまま)
         [SerializeField] private CueController _cueController;
-        //Billiard state reference
         [SerializeField] private Billiard _billiard;
-        //Trajectory controller prefab
         [SerializeField] private GameObject _trajectoryPrefab;
-        //Trajectory ghost ball prefab
         [SerializeField] private GameObject _trajectoryGhostBallPrefab;
-        //Trajectory ghost ball radius
         [SerializeField] private float _trajectoryGhostBallScaleFactor = 1f;
         [SerializeField] private float _velocityFactor = 1f;
         [SerializeField] private float _maxVelocity = .5f;
         [SerializeField] private float _minStrikeVelocity = 0.25f;
+        [SerializeField] private float _defaultStrikeVelocity = 0.5f; // 追加
 
         [SerializeField] private PhysicsJobConstantsSerializable _physicsJobConstants;
         [SerializeField] private PhysicsSolverConstantsSerializable _physicsSolverConstants;
 
         private TrajectoryController _cueBallTrajectory;
         private TrajectoryController _objectBallTrajectoryController;
-        
+
         private GameObject _ghostBall;
         private BilliardState _latestState;
         private Ball[] _originalBalls;
         private bool _showTrajectories;
+
 
         private void Start()
         {
@@ -46,7 +40,7 @@ namespace ibc.controller
 
             //listen for billiard state change
             _billiard.State.OnStableStateChange += OnStableStateChange;
-            _cueController.OnStrikeCommandChange += OnCueTransformChange;
+            _cueController.OnStrikeCommandChange += OnCueTransformChange; //キュー操作時のイベント
 
             //show trajectories by default
             _showTrajectories = true;
@@ -55,6 +49,13 @@ namespace ibc.controller
             _cueBallTrajectory = CreateTrajectory(_trajectoryPrefab);
             _objectBallTrajectoryController = CreateTrajectory(_trajectoryPrefab);
             _ghostBall = CreateGhostBall();
+
+            // 初期状態で軌道を表示 (追加)
+            if (_showTrajectories)
+            {
+                ShowTrajectoriesInternal();
+                CalculateAndShowTrajectories();
+            }
         }
 
 
@@ -63,7 +64,13 @@ namespace ibc.controller
             if (isStable)
             {
                 OnBilliardStableStateReached();
-                ShowTrajectories();
+                // ShowTrajectories(); // ここはCalculateAndShowTrajectoriesを直接呼ぶ
+                if (_showTrajectories) //追加
+                {
+                    ShowTrajectoriesInternal();
+                    CalculateAndShowTrajectories();  // 状態が安定したら軌道再計算
+                }
+
             }
             else
             {
@@ -90,7 +97,7 @@ namespace ibc.controller
             action.Invoke(_cueBallTrajectory);
             action.Invoke(_objectBallTrajectoryController);
         }
-        
+
         private void ResetTrajectories()
         {
             ForEachTrajectory(controller => controller.Reset());
@@ -129,44 +136,60 @@ namespace ibc.controller
         }
 
 
+
         private void OnCueTransformChange()
         {
+            // キューの位置/角度が変わった時も軌道を再計算 (役割変更)
             if (_showTrajectories)
             {
-                ShowTrajectoriesInternal();
-                ResetTrajectories();
-                ResetBalls();
+                //ShowTrajectoriesInternal(); 不要。すでに表示されているはず
+                CalculateAndShowTrajectories();
+            }
+        }
 
-                //resets balls and output 
-                _latestState.Reset(_originalBalls);
 
-                //perform strike command
-                var strikeCommand = _cueController.GetStrikeCommand();
-                strikeCommand.Velocity = math.max(_minStrikeVelocity, _cueController.GetDrawVelocity());
-                strikeCommand.Execute(_latestState);
-                
-                //get velocity vector
-                var ball = _latestState.GetPhysicsBall(_billiard.SelectedBall.Identifier);
 
-                //add starting point
-                _cueBallTrajectory.AddPoint(ball.Position);
-                
-                //try to find next collision event
-                int maxIterations = 1000;
-                int it = 0;
-                PhysicsSolver.Event collisionEvent = _latestState.Solver.GetNextEvent(_latestState.GetPhysicsScene());
+        // 軌道計算と表示の共通ロジック (新規関数)
+        private void CalculateAndShowTrajectories()
+        {
+            ResetTrajectories();
+            ResetBalls();
+
+            //resets balls and output
+            _latestState.Reset(_originalBalls);
+
+            //perform strike command
+            var strikeCommand = _cueController.GetStrikeCommand();
+            float currentVelocity = _cueController.GetDrawVelocity();
+            strikeCommand.Velocity = currentVelocity > 0 ?
+                math.max(_minStrikeVelocity, currentVelocity) :
+                _defaultStrikeVelocity;
+            strikeCommand.Execute(_latestState);
+
+
+
+            //get velocity vector
+            var ball = _latestState.GetPhysicsBall(_billiard.SelectedBall.Identifier);
+
+            //add starting point
+            _cueBallTrajectory.AddPoint(ball.Position);
+
+            //try to find next collision event
+            int maxIterations = 1000;
+            int it = 0;
+            PhysicsSolver.Event collisionEvent = _latestState.Solver.GetNextEvent(_latestState.GetPhysicsScene());
+            _latestState.Solver.Step(_latestState.GetPhysicsScene(), collisionEvent);
+            Ball newBall;
+            do
+            {
+                collisionEvent = _latestState.Solver.GetNextEvent(_latestState.GetPhysicsScene());
                 _latestState.Solver.Step(_latestState.GetPhysicsScene(), collisionEvent);
-                Ball newBall;
-                do
+                newBall = _latestState.GetPhysicsBall(_billiard.SelectedBall.Identifier);
+                it++;
+
+                switch (collisionEvent.Type)
                 {
-                    collisionEvent = _latestState.Solver.GetNextEvent(_latestState.GetPhysicsScene());
-                    _latestState.Solver.Step(_latestState.GetPhysicsScene(), collisionEvent);
-                    newBall = _latestState.GetPhysicsBall(_billiard.SelectedBall.Identifier);
-                    it++;
-                    
-                    switch (collisionEvent.Type)
-                    {
-                        case PhysicsSolver.EventType.BallCollision:
+                    case PhysicsSolver.EventType.BallCollision:
                         {
                             _cueBallTrajectory.AddPoint(newBall.Position);
                             _ghostBall.transform.position = (float3)newBall.Position;
@@ -184,8 +207,8 @@ namespace ibc.controller
                             _objectBallTrajectoryController.AddPoint(newPos);
                         }
 
-                            break;
-                        case PhysicsSolver.EventType.CushionCollision:
+                        break;
+                    case PhysicsSolver.EventType.CushionCollision:
                         {
                             _cueBallTrajectory.AddPoint(newBall.Position);
                             _ghostBall.transform.position = (float3)newBall.Position;
@@ -200,28 +223,30 @@ namespace ibc.controller
                                 _objectBallTrajectoryController.AddPoint(newPos);
                             }
                         }
-                            break;
-                        case PhysicsSolver.EventType.PocketCollision:
-                            
-                            _cueBallTrajectory.AddPoint(newBall.Position);
-                            _ghostBall.transform.position = (float3)newBall.Position;
-                            _ghostBall.gameObject.SetActive(true);
-
-                            break;
-                    }
-
-                    if (IsCollisionEvent(collisionEvent.Type))
                         break;
+                    case PhysicsSolver.EventType.PocketCollision:
 
-                } while (collisionEvent.Type != PhysicsSolver.EventType.None && it < maxIterations);
+                        _cueBallTrajectory.AddPoint(newBall.Position);
+                        _ghostBall.transform.position = (float3)newBall.Position;
+                        _ghostBall.gameObject.SetActive(true);
 
-                if (!IsCollisionEvent(collisionEvent.Type))
-                {
-                    _cueBallTrajectory.AddPoint(newBall.Position);
+                        break;
                 }
+
+                if (IsCollisionEvent(collisionEvent.Type))
+                    break;
+
+            } while (collisionEvent.Type != PhysicsSolver.EventType.None && it < maxIterations);
+
+            if (!IsCollisionEvent(collisionEvent.Type))
+            {
+                _cueBallTrajectory.AddPoint(newBall.Position);
             }
+
         }
-        
+
+
+
 
         private bool IsCollisionEvent(PhysicsSolver.EventType collisionEventType)
         {
@@ -229,10 +254,11 @@ namespace ibc.controller
                 return false;
             return true;
         }
-        
+
         public void ShowTrajectories()
         {
             _showTrajectories = true;
+            OnCueTransformChange(); // 追加
         }
 
         public void HideTrajectories()
