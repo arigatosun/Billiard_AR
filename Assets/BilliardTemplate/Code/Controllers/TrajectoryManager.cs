@@ -15,11 +15,16 @@ namespace ibc.controller
         [SerializeField] private Billiard _billiard;
         [SerializeField] private GameObject _trajectoryPrefab;
         [SerializeField] private GameObject _trajectoryGhostBallPrefab;
+        [SerializeField] private GameObject _circlePrefab; // CircleControllerのプレハブ
         [SerializeField] private float _trajectoryGhostBallScaleFactor = 1f;
         [SerializeField] private float _velocityFactor = 1f;
         [SerializeField] private float _maxVelocity = .5f;
         [SerializeField] private float _minStrikeVelocity = 0.25f;
         [SerializeField] private float _defaultStrikeVelocity = 0.5f; // 追加
+        [SerializeField] private int _maxCushionBounces = 3; // 追加
+        [SerializeField] private float _circleRadiusMultiplier = 3f; // 追加：円の半径の倍率
+
+        private CircleController _whiteBallCircle; // 新しく追加
 
         [SerializeField] private PhysicsJobConstantsSerializable _physicsJobConstants;
         [SerializeField] private PhysicsSolverConstantsSerializable _physicsSolverConstants;
@@ -50,12 +55,26 @@ namespace ibc.controller
             _objectBallTrajectoryController = CreateTrajectory(_trajectoryPrefab);
             _ghostBall = CreateGhostBall();
 
+            // 円の初期化を追加
+            InitializeCircle();
+
             // 初期状態で軌道を表示 (追加)
             if (_showTrajectories)
             {
                 ShowTrajectoriesInternal();
                 CalculateAndShowTrajectories();
             }
+        }
+
+        private void InitializeCircle()
+        {
+            // CircleControllerのインスタンスを作成
+            var circleObj = Instantiate(_circlePrefab, transform, false);
+            _whiteBallCircle = circleObj.GetComponent<CircleController>();
+
+            // 白玉の周りに円を初期化
+            float circleRadius = (float)_billiard.SelectedBall.Radius * _circleRadiusMultiplier;
+            _whiteBallCircle.Initialize(_billiard.SelectedBall, circleRadius);
         }
 
 
@@ -81,6 +100,7 @@ namespace ibc.controller
         private TrajectoryController CreateTrajectory(GameObject prefab)
         {
             var obj = Instantiate(prefab, transform, false);
+            obj.layer = LayerMask.NameToLayer("TrajectoryLine");
             var trajectoryController = obj.GetComponent<TrajectoryController>();
             return trajectoryController;
         }
@@ -88,6 +108,7 @@ namespace ibc.controller
         private GameObject CreateGhostBall()
         {
             var obj = Instantiate(_trajectoryGhostBallPrefab, transform, false);
+            obj.layer = LayerMask.NameToLayer("TrajectoryLine");
             obj.transform.localScale = Vector3.one * (float)_billiard.SelectedBall.Radius * 2 * _trajectoryGhostBallScaleFactor;
             return obj;
         }
@@ -111,11 +132,19 @@ namespace ibc.controller
         private void HideTrajectoriesInternal()
         {
             ForEachTrajectory(controller => controller.Hide());
+            if (_whiteBallCircle != null)
+            {
+                _whiteBallCircle.Hide();
+            }
         }
 
         private void ShowTrajectoriesInternal()
         {
             ForEachTrajectory(controller => controller.Show());
+            if (_whiteBallCircle != null)
+            {
+                _whiteBallCircle.Show();
+            }
         }
 
         private void OnBilliardStableStateReached()
@@ -155,10 +184,8 @@ namespace ibc.controller
             ResetTrajectories();
             ResetBalls();
 
-            //resets balls and output
             _latestState.Reset(_originalBalls);
 
-            //perform strike command
             var strikeCommand = _cueController.GetStrikeCommand();
             float currentVelocity = _cueController.GetDrawVelocity();
             strikeCommand.Velocity = currentVelocity > 0 ?
@@ -166,17 +193,13 @@ namespace ibc.controller
                 _defaultStrikeVelocity;
             strikeCommand.Execute(_latestState);
 
-
-
-            //get velocity vector
             var ball = _latestState.GetPhysicsBall(_billiard.SelectedBall.Identifier);
 
-            //add starting point
             _cueBallTrajectory.AddPoint(ball.Position);
 
-            //try to find next collision event
             int maxIterations = 1000;
             int it = 0;
+            int cushionBounces = 0;  // 追加
             PhysicsSolver.Event collisionEvent = _latestState.Solver.GetNextEvent(_latestState.GetPhysicsScene());
             _latestState.Solver.Step(_latestState.GetPhysicsScene(), collisionEvent);
             Ball newBall;
@@ -205,44 +228,30 @@ namespace ibc.controller
 
                             _objectBallTrajectoryController.AddPoint(objectBall.Position);
                             _objectBallTrajectoryController.AddPoint(newPos);
+                            return;  // 追加: ボール衝突で終了
                         }
-
-                        break;
                     case PhysicsSolver.EventType.CushionCollision:
                         {
+                            cushionBounces++;  // 追加
                             _cueBallTrajectory.AddPoint(newBall.Position);
                             _ghostBall.transform.position = (float3)newBall.Position;
                             _ghostBall.gameObject.SetActive(true);
 
-                            var vel = math.length(newBall.Velocity) * _velocityFactor;
-                            if (vel > 1E-5f)
-                            {
-                                var newPos = newBall.Position + math.clamp(vel, 0, _maxVelocity) * math.normalizesafe(newBall.Velocity);
-
-                                _objectBallTrajectoryController.AddPoint(newBall.Position);
-                                _objectBallTrajectoryController.AddPoint(newPos);
-                            }
                         }
                         break;
                     case PhysicsSolver.EventType.PocketCollision:
-
                         _cueBallTrajectory.AddPoint(newBall.Position);
                         _ghostBall.transform.position = (float3)newBall.Position;
                         _ghostBall.gameObject.SetActive(true);
-
-                        break;
+                        return;  // 追加: ポケット衝突で終了
                 }
 
-                if (IsCollisionEvent(collisionEvent.Type))
-                    break;
+            } while (cushionBounces < _maxCushionBounces &&   // 条件追加
+                    collisionEvent.Type != PhysicsSolver.EventType.None &&
+                    it < maxIterations);
 
-            } while (collisionEvent.Type != PhysicsSolver.EventType.None && it < maxIterations);
-
-            if (!IsCollisionEvent(collisionEvent.Type))
-            {
-                _cueBallTrajectory.AddPoint(newBall.Position);
-            }
-
+            // 最後の位置を追加
+            _cueBallTrajectory.AddPoint(newBall.Position);
         }
 
 

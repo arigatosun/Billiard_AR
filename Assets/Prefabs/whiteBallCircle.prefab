@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &1536574539760628240
+--- !u!1 &3146382633937930097
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,23 +8,23 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 8664380836560157556}
-  - component: {fileID: 329818384003954018}
-  - component: {fileID: 2495626136462647616}
-  m_Layer: 0
-  m_Name: Trajectory
-  m_TagString: Trajectory
+  - component: {fileID: 5781669079518286903}
+  - component: {fileID: 6327191653167028558}
+  - component: {fileID: 1492168691366079625}
+  m_Layer: 3
+  m_Name: whiteBallCircle
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &8664380836560157556
+--- !u!4 &5781669079518286903
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1536574539760628240}
+  m_GameObject: {fileID: 3146382633937930097}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
@@ -33,16 +33,16 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!120 &329818384003954018
+--- !u!120 &6327191653167028558
 LineRenderer:
   serializedVersion: 2
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1536574539760628240}
+  m_GameObject: {fileID: 3146382633937930097}
   m_Enabled: 1
-  m_CastShadows: 0
+  m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
   m_StaticShadowCaster: 0
@@ -54,10 +54,10 @@ LineRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
-  m_RenderingLayerMask: 257
+  m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: cba158e7cf8e9254a935eded5b19f9b6, type: 2}
+  - {fileID: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -77,13 +77,13 @@ LineRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 1
+  m_SortingOrder: 0
   m_Positions:
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 1}
   m_Parameters:
     serializedVersion: 3
-    widthMultiplier: 0.04
+    widthMultiplier: 1
     widthCurve:
       serializedVersion: 2
       m_Curve:
@@ -103,7 +103,7 @@ LineRenderer:
       serializedVersion: 2
       key0: {r: 1, g: 1, b: 1, a: 1}
       key1: {r: 1, g: 1, b: 1, a: 1}
-      key2: {r: 1, g: 1, b: 1, a: 0}
+      key2: {r: 0, g: 0, b: 0, a: 0}
       key3: {r: 0, g: 0, b: 0, a: 0}
       key4: {r: 0, g: 0, b: 0, a: 0}
       key5: {r: 0, g: 0, b: 0, a: 0}
@@ -111,15 +111,15 @@ LineRenderer:
       key7: {r: 0, g: 0, b: 0, a: 0}
       ctime0: 0
       ctime1: 65535
-      ctime2: 65535
+      ctime2: 0
       ctime3: 0
       ctime4: 0
       ctime5: 0
       ctime6: 0
       ctime7: 0
       atime0: 0
-      atime1: 54741
-      atime2: 65535
+      atime1: 65535
+      atime2: 0
       atime3: 0
       atime4: 0
       atime5: 0
@@ -128,45 +128,31 @@ LineRenderer:
       m_Mode: 0
       m_ColorSpace: -1
       m_NumColorKeys: 2
-      m_NumAlphaKeys: 3
-    numCornerVertices: 3
-    numCapVertices: 3
-    alignment: 1
+      m_NumAlphaKeys: 2
+    numCornerVertices: 0
+    numCapVertices: 0
+    alignment: 0
     textureMode: 0
     textureScale: {x: 1, y: 1}
     shadowBias: 0.5
     generateLightingData: 0
   m_MaskInteraction: 0
-  m_UseWorldSpace: 0
+  m_UseWorldSpace: 1
   m_Loop: 0
-  m_ApplyActiveColorSpace: 0
---- !u!114 &2495626136462647616
+  m_ApplyActiveColorSpace: 1
+--- !u!114 &1492168691366079625
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1536574539760628240}
+  m_GameObject: {fileID: 3146382633937930097}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 94f989d5d24e6ed4488fb12ed65b81d5, type: 3}
+  m_Script: {fileID: 11500000, guid: 2f550b305b0a84a409b659ab9e087652, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _minDistance: 0.1
-  ColorMap:
-  - {r: 0.654902, g: 0.654902, b: 0.654902, a: 0}
-  - {r: 0.9294118, g: 0.80392164, b: 0.5137255, a: 0}
-  - {r: 0.5882353, g: 0.7058824, b: 0.9058824, a: 0}
-  - {r: 0.8352942, g: 0.40784317, b: 0.3803922, a: 0}
-  - {r: 0.41176474, g: 0.3803922, b: 0.5686275, a: 0}
-  - {r: 0.92549026, g: 0.6666667, b: 0.427451, a: 0}
-  - {r: 0.45882356, g: 0.72156864, b: 0.48235297, a: 0}
-  - {r: 0.9686275, g: 0.6117647, b: 0.60784316, a: 0}
-  - {r: 0.19215688, g: 0.19215688, b: 0.20392159, a: 0}
-  - {r: 0.6862745, g: 0.34117648, b: 0.33333334, a: 0}
-  - {r: 0.5882353, g: 0.70980394, b: 0.91372555, a: 0}
-  - {r: 0.87843144, g: 0.47058827, b: 0.44705886, a: 0}
-  - {r: 0.40000004, g: 0.36862746, b: 0.5568628, a: 0}
-  - {r: 0.93725497, g: 0.6784314, b: 0.43921572, a: 0}
-  - {r: 0.25882354, g: 0.5137255, b: 0.2784314, a: 0}
-  - {r: 0.8000001, g: 0.44705886, b: 0.43921572, a: 0}
+  _segments: 60
+  _radius: 0.2
+  _circleColor: {r: 1, g: 1, b: 1, a: 1}
+  _lineWidth: 0.01
