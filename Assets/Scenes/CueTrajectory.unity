@@ -1682,7 +1682,6 @@ GameObject:
   m_Component:
   - component: {fileID: 968413881}
   - component: {fileID: 968413880}
-  - component: {fileID: 968413879}
   m_Layer: 0
   m_Name: ProjectionCamera
   m_TagString: Untagged
@@ -1690,14 +1689,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!81 &968413879
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 968413878}
-  m_Enabled: 1
 --- !u!20 &968413880
 Camera:
   m_ObjectHideFlags: 0
@@ -3368,7 +3359,7 @@ Transform:
   m_GameObject: {fileID: 1510662553}
   serializedVersion: 2
   m_LocalRotation: {x: 0.7071068, y: -0, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 0.20099998, z: 0}
+  m_LocalPosition: {x: 0, y: 0.057, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -5721,8 +5712,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 7685349337370170009}
   m_HandleRect: {fileID: 7685349337370170022}
   m_Direction: 2
-  m_Value: 1
-  m_Size: 1
+  m_Value: 0
+  m_Size: 0
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
