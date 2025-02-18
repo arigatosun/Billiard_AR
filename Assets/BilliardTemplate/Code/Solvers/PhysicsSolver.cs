@@ -489,9 +489,22 @@ namespace ibc.solvers
             }
         }
 
-        /// <summary> Moves physics scene to the next state which is when the provided event happens </summary>
         public void Step(PhysicsScene scene, Event e)
         {
+            // outパラメータは使わないので、discardまたは変数に捨てる
+            Step(scene, e, out _);
+        }
+
+        /// <summary> Moves physics scene to the next state which is when the provided event happens </summary>
+        public void Step(PhysicsScene scene, Event e, out double3 contactPoint)
+        {
+            // 衝突点が無い場合のデフォルト値として∞ベクトル
+            contactPoint = new double3(
+                double.PositiveInfinity,
+                double.PositiveInfinity,
+                double.PositiveInfinity
+            );
+
             if (e.Type == EventType.None)
                 return;
 
@@ -499,74 +512,111 @@ namespace ibc.solvers
             var cushions = scene.Cushions;
 
             double t = math.max(e.Time, 0);
-
             if (t > 0)
             {
+                // 時間 t だけ物理を進める
                 for (var i = 0; i < balls.Length; i++)
                 {
-                    if (balls[i].State != Ball.StateType.Normal)
-                        continue;
+                    if (balls[i].State != Ball.StateType.Normal) continue;
                     StepBallState(balls[i], out var b, t);
                     CacheCoeff(ref b);
                     balls[i] = b;
                 }
             }
 
-
+            // イベント対象のボール
             Ball ball = balls[e.BallIndex];
 
             switch (e.Type)
             {
-                case EventType.None: break;
+                // 1) モーションや状態遷移イベント
                 case EventType.StateTransition:
                     {
+                        // 例：もしボールが "Struck" 状態なら "Normal" に戻す
                         if (ball.State == Ball.StateType.Struck)
                             ball.State = Ball.StateType.Normal;
 
+                        // 例：イベントに格納されているモーションへ移行
                         ball.Motion = e.Motion;
 
+                        // 例：空中から着地(Landing)するタイミングで床衝突を解決→再度モーションを計算
                         if (ball.Motion == Ball.MotionType.Landing)
                         {
                             ResolveBallSurfaceImpact(ref ball);
                             ball.Motion = CalculateMotion(ball);
                         }
+                        break;
                     }
-                    break;
+
+                // 2) ポケット衝突イベント
                 case EventType.PocketCollision:
                     {
+                        // ボールをポケット済みに
                         ball.Motion = Ball.MotionType.Stationary;
                         ball.State = Ball.StateType.Pocketed;
+
+                        // もし衝突点を描画したいなら、衝突前の位置を contactPoint に入れる
+                        // contactPoint = ball.Position; // etc...
+                        break;
                     }
-                    break;
+
+                // 3) ボール同士の衝突イベント
                 case EventType.BallCollision:
                     {
-                        Ball ball2 = balls[e.OtherIndex];
-                        ResolveBallToBallImpact(ref ball, ref ball2);
-                        ball.Motion = CalculateMotion(ball);
-                        ball2.Motion = CalculateMotion(ball2);
+                        // もう一方のボールを取得
+                        // （ 例： e.OtherIndex のボール ）
+                        Ball otherBall = balls[e.OtherIndex];
 
-                        CacheCoeff(ref ball2);
-                        balls[e.OtherIndex] = ball2;
+                        // 衝突前の接触点を計算したい場合は、以下のように書ける
+                        //  (衝突前の位置を使う or 2球の中心から法線を出すなど)
+                        //  contactPoint = ...;
+
+                        // 実際の衝突解決
+                        ResolveBallToBallImpact(ref ball, ref otherBall);
+
+                        // 衝突後、双方のモーションを再判定
+                        ball.Motion = CalculateMotion(ball);
+                        otherBall.Motion = CalculateMotion(otherBall);
+
+                        // 変更を元の配列に反映
+                        balls[e.OtherIndex] = otherBall;
+                        break;
                     }
-                    break;
+
+                // 4) クッション衝突イベント
                 case EventType.CushionCollision:
                     {
+                        // 衝突前のボール位置などから contactPoint を計算 (描画用)
+                        double3 preImpactPos = ball.Position;
+                        Cushion cushion = cushions[e.OtherIndex];
+                        double3 p0 = cushion.P0;
+                        if (_constants.Planar)
+                            p0 += new double3(0, 1, 0) * cushion.Height;
+
+                        double3 cp = GetClosestPointOnLineSegment(preImpactPos, p0, cushion.Dir, cushion.Distance);
+                        double3 normal = cushion.Normal;
+                        if (math.dot(normal, cp - preImpactPos) > 0)
+                            normal = -normal;
+
+                        // ボール表面の接触点を可視化用に記録
+                        contactPoint = preImpactPos - normal * ball.Radius;
+
+                        // 実際の衝突解決
                         if (e.VertexIndex == -1)
                         {
-                            ResolveBallCushionImpact(ref ball, cushions[e.OtherIndex]);
-                            ball.Motion = CalculateMotion(ball);
+                            ResolveBallCushionImpact(ref ball, cushion);
                         }
                         else
                         {
-                            ResolveBallVertexImpact(ref ball, cushions[e.OtherIndex], e.VertexIndex);
-                            ball.Motion = CalculateMotion(ball);
+                            ResolveBallVertexImpact(ref ball, cushion, e.VertexIndex);
                         }
+                        // 衝突後のモーションを再判定
+                        ball.Motion = CalculateMotion(ball);
+                        break;
                     }
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
             }
 
+            // 更新されたボールデータを書き戻す
             CacheCoeff(ref ball);
             balls[e.BallIndex] = ball;
         }
@@ -706,7 +756,7 @@ namespace ibc.solvers
         /// <param name="n">Impact normal oriented such that dot product <v,n> is negative</param>
         /// <param name="c">Impact parameters.</param>
         /// <param name="l">Diagonal mass matrix elements M = W^(-1)</param>
-        private double3 BilinearCollisionLaw(in double3 v, in double3 n, in PhysicsImpactParameters c, in double3 l) 
+        private double3 BilinearCollisionLaw(in double3 v, in double3 n, in PhysicsImpactParameters c, in double3 l)
         {
             double vn = math.dot(v, n);
             double3 t = v - vn * n;
@@ -727,7 +777,7 @@ namespace ibc.solvers
         {
             double3 p0 = cushion[vertex];
 
-            if(_constants.Planar)
+            if (_constants.Planar)
                 p0 += UnitY * cushion.Height;
 
             double3 cp = p0;
@@ -753,7 +803,7 @@ namespace ibc.solvers
         private void ResolveBallCushionImpact(ref Ball b, Cushion cushion)
         {
             double3 p0 = cushion.P0;
-            if(_constants.Planar)
+            if (_constants.Planar)
                 p0 += UnitY * cushion.Height;
 
             double3 cp = GetClosestPointOnLineSegment(b.Position, p0, cushion.Dir, cushion.Distance);
@@ -771,7 +821,7 @@ namespace ibc.solvers
 
             double3 r1 = -normal * b.Radius;
             double3 v = b.Velocity + math.cross(b.AngularVelocity, r1);
-            double m = (2 /7.0) * b.Mass;
+            double m = (2 / 7.0) * b.Mass;
             double3 l = new double3(b.Mass, m, m);
             double3 impulse = BilinearCollisionLaw(v, normal, _constants.BallToCushionImpactParameters, l);
 
@@ -861,7 +911,7 @@ namespace ibc.solvers
             //perfect plastic frictionless collision(mu = 0, e = 0, e_t = -1)
             double3 P_I = -n * math.dot(n, v) / (math.dot(n, math.mul(math.inverse(M), n)));
             double3 P_II = -math.mul(M, v);
-         
+
             //candidate impulse that satisfy the energy constraint and non inter-penetration criteria
             double3 P_hat = (1 + e) * P_I + (1 + e_t) * (P_II - P_I);
             double k;
@@ -983,7 +1033,8 @@ namespace ibc.solvers
                         ball.VelCoeff = 0;
                         ball.AccCoeff = 0;
                         return;
-                    };
+                    }
+                    ;
                 case Ball.MotionType.Rolling:
                     {
                         double3 velUnit = math.normalizesafe(ball.Velocity, double3.zero);
