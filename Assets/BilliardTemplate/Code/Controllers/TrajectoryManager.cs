@@ -181,6 +181,7 @@ namespace ibc.controller
         // 軌道計算と表示の共通ロジック (新規関数)
         private void CalculateAndShowTrajectories()
         {
+            // ① 既存の初期化まわりはそのまま
             ResetTrajectories();
             ResetBalls();
 
@@ -188,71 +189,127 @@ namespace ibc.controller
 
             var strikeCommand = _cueController.GetStrikeCommand();
             float currentVelocity = _cueController.GetDrawVelocity();
-            strikeCommand.Velocity = currentVelocity > 0 ?
-                math.max(_minStrikeVelocity, currentVelocity) :
-                _defaultStrikeVelocity;
+            strikeCommand.Velocity = currentVelocity > 0
+                ? math.max(_minStrikeVelocity, currentVelocity)
+                : _defaultStrikeVelocity;
             strikeCommand.Execute(_latestState);
 
             var ball = _latestState.GetPhysicsBall(_billiard.SelectedBall.Identifier);
 
+            // 手玉の初期位置を軌道に追加
             _cueBallTrajectory.AddPoint(ball.Position);
 
             int maxIterations = 1000;
             int it = 0;
-            int cushionBounces = 0;  // 追加
-            PhysicsSolver.Event collisionEvent = _latestState.Solver.GetNextEvent(_latestState.GetPhysicsScene());
-            _latestState.Solver.Step(_latestState.GetPhysicsScene(), collisionEvent);
+            int cushionBounces = 0;
+
+            // ② 最初の衝突イベントと衝突解決を行う
+            PhysicsSolver.Event collisionEvent =
+                _latestState.Solver.GetNextEvent(_latestState.GetPhysicsScene());
+
+            // 「衝突直前の接触点」が返ってくる想定
+            double3 contactPoint;
+            _latestState.Solver.Step(_latestState.GetPhysicsScene(), collisionEvent, out contactPoint);
+
             Ball newBall;
             do
             {
+                // 次の衝突イベントを取得 & 解決
                 collisionEvent = _latestState.Solver.GetNextEvent(_latestState.GetPhysicsScene());
-                _latestState.Solver.Step(_latestState.GetPhysicsScene(), collisionEvent);
+                _latestState.Solver.Step(_latestState.GetPhysicsScene(), collisionEvent, out contactPoint);
+
+                // 衝突後のボール状態を取得
                 newBall = _latestState.GetPhysicsBall(_billiard.SelectedBall.Identifier);
                 it++;
 
+                // ③ 衝突種類に応じた描画処理
                 switch (collisionEvent.Type)
                 {
                     case PhysicsSolver.EventType.BallCollision:
                         {
-                            _cueBallTrajectory.AddPoint(newBall.Position);
-                            _ghostBall.transform.position = (float3)newBall.Position;
+                            // 衝突点が有効かどうかを判定（Infinityでないか）
+                            if (!math.any(math.isinf(contactPoint)))
+                            {
+                                _cueBallTrajectory.AddPoint(contactPoint);
+                                _ghostBall.transform.position = (float3)contactPoint;
+                            }
+                            else
+                            {
+                                // 衝突点が無効なら従来どおり newBall.Position を使う
+                                _cueBallTrajectory.AddPoint(newBall.Position);
+                                _ghostBall.transform.position = (float3)newBall.Position;
+                            }
+
                             _ghostBall.gameObject.SetActive(true);
 
+                            // ボール同士の衝突では、相手ボールの簡易予測線も表示する
                             var firstBall = _latestState.GetPhysicsBallByIndex(collisionEvent.BallIndex);
                             var objectBall = _latestState.GetPhysicsBallByIndex(collisionEvent.OtherIndex);
                             if (firstBall.Identifier != ball.Identifier)
                                 objectBall = firstBall;
 
                             var vel = math.length(objectBall.Velocity) * _velocityFactor;
-                            var newPos = objectBall.Position + math.clamp(vel, 0, _maxVelocity) * math.normalizesafe(objectBall.Velocity);
+                            var newPos = objectBall.Position
+                                + math.clamp(vel, 0, _maxVelocity)
+                                * math.normalizesafe(objectBall.Velocity);
 
                             _objectBallTrajectoryController.AddPoint(objectBall.Position);
                             _objectBallTrajectoryController.AddPoint(newPos);
-                            return;  // 追加: ボール衝突で終了
+
+                            // 手玉が的球に当たった時点で軌道予測終了
+                            return;
                         }
+
                     case PhysicsSolver.EventType.CushionCollision:
                         {
-                            cushionBounces++;  // 追加
-                            _cueBallTrajectory.AddPoint(newBall.Position);
-                            _ghostBall.transform.position = (float3)newBall.Position;
-                            _ghostBall.gameObject.SetActive(true);
+                            cushionBounces++;
 
+                            // 衝突点が有効ならそちらを描画
+                            if (!math.any(math.isinf(contactPoint)))
+                            {
+                                _cueBallTrajectory.AddPoint(contactPoint);
+                                _ghostBall.transform.position = (float3)contactPoint;
+                            }
+                            else
+                            {
+                                _cueBallTrajectory.AddPoint(newBall.Position);
+                                _ghostBall.transform.position = (float3)newBall.Position;
+                            }
+
+                            _ghostBall.gameObject.SetActive(true);
                         }
                         break;
+
                     case PhysicsSolver.EventType.PocketCollision:
-                        _cueBallTrajectory.AddPoint(newBall.Position);
-                        _ghostBall.transform.position = (float3)newBall.Position;
-                        _ghostBall.gameObject.SetActive(true);
-                        return;  // 追加: ポケット衝突で終了
+                        {
+                            // 衝突点が有効ならそちらを描画
+                            if (!math.any(math.isinf(contactPoint)))
+                            {
+                                _cueBallTrajectory.AddPoint(contactPoint);
+                                _ghostBall.transform.position = (float3)contactPoint;
+                            }
+                            else
+                            {
+                                _cueBallTrajectory.AddPoint(newBall.Position);
+                                _ghostBall.transform.position = (float3)newBall.Position;
+                            }
+
+                            _ghostBall.gameObject.SetActive(true);
+                            // ポケット衝突で予測終了
+                            return;
+                        }
                 }
 
-            } while (cushionBounces < _maxCushionBounces &&   // 条件追加
-                    collisionEvent.Type != PhysicsSolver.EventType.None &&
-                    it < maxIterations);
+            } while (
+                cushionBounces < _maxCushionBounces &&
+                collisionEvent.Type != PhysicsSolver.EventType.None &&
+                it < maxIterations
+            );
 
-            // 最後の位置を追加
+            // ④ ループ終了時の最終位置を追加
             _cueBallTrajectory.AddPoint(newBall.Position);
         }
+
 
 
 
