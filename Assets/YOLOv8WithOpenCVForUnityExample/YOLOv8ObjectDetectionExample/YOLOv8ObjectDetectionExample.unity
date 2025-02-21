@@ -680,155 +680,17 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1105325470}
   m_CullTransparentMesh: 0
---- !u!1 &1478462775
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1478462780}
-  - component: {fileID: 1478462776}
-  - component: {fileID: 1478462783}
-  - component: {fileID: 1478462782}
-  m_Layer: 0
-  m_Name: YOLOv8ObjectDetectionExample
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1478462776
+--- !u!114 &1478462776 stripped
 MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
+  m_CorrespondingSourceObject: {fileID: 7871112146265436237, guid: e7402fe15fb76e5419523833936cf74e, type: 3}
+  m_PrefabInstance: {fileID: 9092492297010770110}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1478462775}
+  m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4a5289048e46e4e4ab1cc96c0646ee01, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  resultPreview: {fileID: 2081093465}
-  model: yolov11_pool.onnx
-  classes: class.names
-  confThreshold: 0.25
-  nmsThreshold: 0.45
-  topK: 300
-  inpWidth: 640
-  inpHeight: 640
---- !u!4 &1478462780
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1478462775}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1478462782
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1478462775}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5ff3cc292fa5e1f4fab034d70f1aae07, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  alignment: 1
-  offset: {x: 10, y: 10}
-  boxVisible: 1
-  boxWidth: 75
-  boxHeight: 30
-  padding: {x: 8, y: 5}
-  consoleHeight: 100
---- !u!114 &1478462783
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1478462775}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e564a549956aebc4d9acef3ff91b0981, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _requestedSource2MatHelperClassName: 0
-  _currentSource2MatHelperClassInterfaces: 1
-  _requestedDeviceName: 
-  _requestedWidth: 1920
-  _requestedHeight: 1080
-  _requestedIsFrontFacing: 0
-  _requestedFPS: 30
-  _requestedMatUpdateFPS: 30
-  _requestedVideoFilePath: YOLOv8WithOpenCVForUnityExample/TestVideos/pexels-taryn-elliott-3770033-960x540-25fps.mp4
-  _loop: 1
-  _requestedImageFilePath: 
-  _repeat: 1
-  _sourceTexture: {fileID: 0}
-  _customClassComponent: {fileID: 0}
-  _outputColorFormat: 3
-  _timeoutFrameCount: 1500
-  _onInitialized:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1478462776}
-        m_TargetAssemblyTypeName: YOLOv8WithOpenCVForUnityExample.YOLOv8ObjectDetectionExample,
-          Assembly-CSharp
-        m_MethodName: OnSourceToMatHelperInitialized
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-  _onDisposed:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1478462776}
-        m_TargetAssemblyTypeName: YOLOv8WithOpenCVForUnityExample.YOLOv8ObjectDetectionExample,
-          Assembly-CSharp
-        m_MethodName: OnSourceToMatHelperDisposed
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-  _onErrorOccurred:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1478462776}
-        m_TargetAssemblyTypeName: YOLOv8WithOpenCVForUnityExample.YOLOv8ObjectDetectionExample,
-          Assembly-CSharp
-        m_MethodName: OnSourceToMatHelperErrorOccurred
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
 --- !u!1 &1525823489
 GameObject:
   m_ObjectHideFlags: 0
@@ -1859,11 +1721,72 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!1001 &9092492297010770110
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 2194355916459570676, guid: e7402fe15fb76e5419523833936cf74e, type: 3}
+      propertyPath: m_Name
+      value: YOLOv8ObjectDetectionExample
+      objectReference: {fileID: 0}
+    - target: {fileID: 7592213568545731350, guid: e7402fe15fb76e5419523833936cf74e, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7592213568545731350, guid: e7402fe15fb76e5419523833936cf74e, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7592213568545731350, guid: e7402fe15fb76e5419523833936cf74e, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7592213568545731350, guid: e7402fe15fb76e5419523833936cf74e, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7592213568545731350, guid: e7402fe15fb76e5419523833936cf74e, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7592213568545731350, guid: e7402fe15fb76e5419523833936cf74e, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7592213568545731350, guid: e7402fe15fb76e5419523833936cf74e, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7592213568545731350, guid: e7402fe15fb76e5419523833936cf74e, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7592213568545731350, guid: e7402fe15fb76e5419523833936cf74e, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7592213568545731350, guid: e7402fe15fb76e5419523833936cf74e, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7871112146265436237, guid: e7402fe15fb76e5419523833936cf74e, type: 3}
+      propertyPath: resultPreview
+      value: 
+      objectReference: {fileID: 2081093465}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: e7402fe15fb76e5419523833936cf74e, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
-  - {fileID: 1478462780}
+  - {fileID: 9092492297010770110}
   - {fileID: 1542644391}
   - {fileID: 433884705}
   - {fileID: 1895993193}

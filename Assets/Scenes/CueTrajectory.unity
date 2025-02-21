@@ -3280,6 +3280,74 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1402454908}
   m_Mesh: {fileID: 7398509403596113055, guid: 98817fc7971a12843b4a72f56d71aa80, type: 3}
+--- !u!1 &1405995121
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1405995123}
+  - component: {fileID: 1405995122}
+  m_Layer: 0
+  m_Name: YoloDetector
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!114 &1405995122
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1405995121}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 737498a9a8307744b8793e2ad054418b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cameraView: {fileID: 2095309302}
+  detectionText: {fileID: 1768287408}
+  modelFileName: yolov11_pool.onnx
+  inputWidth: 640
+  inputHeight: 640
+  confThreshold: 0.25
+  nmsThreshold: 0.45
+  classLabels:
+  - white
+  - 1_yellow
+  - 2_blue
+  - 3_red
+  - 4_purple
+  - 5_orange
+  - 6_green
+  - 7_dred
+  - 8_black
+  - 9_yellow
+  - 10_blue
+  - 11_red
+  - 12_purple
+  - 13_orange
+  - 14_green
+  - 15_dred
+--- !u!4 &1405995123
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1405995121}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 7.287891, y: -6.8113256, z: 15.720544}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1411397755
 GameObject:
   m_ObjectHideFlags: 0
@@ -4274,7 +4342,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1739426703
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4282,7 +4350,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1739426702}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 47fdd362bc22db04f96e3422d1300e97, type: 3}
   m_Name: 
@@ -4481,7 +4549,7 @@ MonoBehaviour:
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 10
-    m_MaxSize: 74
+    m_MaxSize: 224
     m_Alignment: 0
     m_AlignByGeometry: 0
     m_RichText: 1
@@ -4997,6 +5065,67 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1934218448}
   m_Mesh: {fileID: 7398509403596113055, guid: 98817fc7971a12843b4a72f56d71aa80, type: 3}
+--- !u!1001 &1953409179
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 2194355916459570676, guid: e7402fe15fb76e5419523833936cf74e, type: 3}
+      propertyPath: m_Name
+      value: YOLOv8ObjectDetectionExample
+      objectReference: {fileID: 0}
+    - target: {fileID: 7592213568545731350, guid: e7402fe15fb76e5419523833936cf74e, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7592213568545731350, guid: e7402fe15fb76e5419523833936cf74e, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7592213568545731350, guid: e7402fe15fb76e5419523833936cf74e, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7592213568545731350, guid: e7402fe15fb76e5419523833936cf74e, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7592213568545731350, guid: e7402fe15fb76e5419523833936cf74e, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7592213568545731350, guid: e7402fe15fb76e5419523833936cf74e, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7592213568545731350, guid: e7402fe15fb76e5419523833936cf74e, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7592213568545731350, guid: e7402fe15fb76e5419523833936cf74e, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7592213568545731350, guid: e7402fe15fb76e5419523833936cf74e, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7592213568545731350, guid: e7402fe15fb76e5419523833936cf74e, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7871112146265436237, guid: e7402fe15fb76e5419523833936cf74e, type: 3}
+      propertyPath: resultPreview
+      value: 
+      objectReference: {fileID: 2095309302}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: e7402fe15fb76e5419523833936cf74e, type: 3}
 --- !u!1 &1968672100
 GameObject:
   m_ObjectHideFlags: 0
@@ -5727,6 +5856,7 @@ GameObject:
   - component: {fileID: 2095309303}
   - component: {fileID: 2095309302}
   - component: {fileID: 2095309304}
+  - component: {fileID: 2095309305}
   m_Layer: 5
   m_Name: RawImage
   m_TagString: Untagged
@@ -5807,6 +5937,20 @@ MonoBehaviour:
   - {x: 1.081, y: -0.518}
   - {x: 1.081, y: 0.518}
   - {x: -1.081, y: 0.518}
+--- !u!114 &2095309305
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2095309299}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 86710e43de46f6f4bac7c8e50813a599, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_AspectMode: 0
+  m_AspectRatio: 1.7777778
 --- !u!1 &2105316099
 GameObject:
   m_ObjectHideFlags: 0
@@ -7013,3 +7157,5 @@ SceneRoots:
   - {fileID: 1859601927}
   - {fileID: 1739426704}
   - {fileID: 1044352097}
+  - {fileID: 1405995123}
+  - {fileID: 1953409179}

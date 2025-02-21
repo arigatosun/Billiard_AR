@@ -15,6 +15,7 @@ using OpenCVForUnity.UnityUtils.Helper;
 using YOLOv8WithOpenCVForUnity;
 using System.Threading;
 using UnityEngine.UI;
+using System.IO;
 
 namespace YOLOv8WithOpenCVForUnityExample
 {
@@ -34,11 +35,11 @@ namespace YOLOv8WithOpenCVForUnityExample
 
         [Space(10)]
 
-        [TooltipAttribute("Path to a binary file of model contains trained weights.")]
-        public string model = "yolov8n.onnx";
+        [TooltipAttribute("Path to a binary file of model contains trained weights in StreamingAssets folder.")]
+        public string modelPath = "yolov11_pool.onnx";
 
-        [TooltipAttribute("Optional path to a text file with names of classes to label detected objects.")]
-        public string classes = "coco.names";
+        [TooltipAttribute("Optional path to a text file with names of classes in StreamingAssets folder.")]
+        public string classesPath = "class.names";
 
         [TooltipAttribute("Confidence threshold.")]
         public float confThreshold = 0.25f;
@@ -100,10 +101,12 @@ namespace YOLOv8WithOpenCVForUnityExample
             if (fpsMonitor != null)
                 fpsMonitor.consoleText = "Preparing file access...";
 
-            if (!string.IsNullOrEmpty(classes))
-                classes_filepath = await Utils.getFilePathAsyncTask("YOLOv8WithOpenCVForUnityExample/" + classes, cancellationToken: cts.Token);
-            if (!string.IsNullOrEmpty(model))
-                model_filepath = await Utils.getFilePathAsyncTask("YOLOv8WithOpenCVForUnityExample/" + model, cancellationToken: cts.Token);
+            // StreamingAssetsからファイルパスを取得
+            string streamingAssetsPath = Application.streamingAssetsPath;
+            if (!string.IsNullOrEmpty(classesPath))
+                classes_filepath = Path.Combine(streamingAssetsPath, classesPath);
+            if (!string.IsNullOrEmpty(modelPath))
+                model_filepath = Path.Combine(streamingAssetsPath, modelPath);
 
             if (fpsMonitor != null)
                 fpsMonitor.consoleText = "";
@@ -119,7 +122,7 @@ namespace YOLOv8WithOpenCVForUnityExample
 
             if (string.IsNullOrEmpty(model_filepath))
             {
-                Debug.LogError("model: " + model + " is not loaded.");
+                Debug.LogError("model: " + modelPath + " is not loaded.");
             }
             else
             {

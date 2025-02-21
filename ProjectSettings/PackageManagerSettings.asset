@@ -35,7 +35,23 @@ MonoBehaviour:
     m_IsDefault: 0
     m_Capabilities: 0
     m_ConfigSource: 4
-  m_UserSelectedRegistryName: Keijiro
+  - m_Id: scoped:project:Unity NuGet
+    m_Name: Unity NuGet
+    m_Url: https://unitynuget-registry.azurewebsites.net
+    m_Scopes:
+    - org.nuget
+    m_IsDefault: 0
+    m_Capabilities: 0
+    m_ConfigSource: 4
+  - m_Id: scoped:project:oxxxruntime
+    m_Name: oxxxruntime
+    m_Url: https://registry.npmjs.com
+    m_Scopes:
+    - com.github.asus4
+    m_IsDefault: 0
+    m_Capabilities: 0
+    m_ConfigSource: 4
+  m_UserSelectedRegistryName: oxxxruntime
   m_UserAddingNewScopedRegistry: 0
   m_RegistryInfoDraft:
     m_Modified: 0
