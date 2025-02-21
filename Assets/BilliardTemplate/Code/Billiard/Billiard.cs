@@ -49,6 +49,12 @@ namespace ibc
         public int SelectedBallId => _selectedBallId;
         public int SelectedCueStickId => _selectedCueStickId;
 
+        /// <summary>White ball identifier.</summary>
+        public int WhiteBallId { get; set; } = 0; // 通常、白球は ID 0
+
+        /// <summary>Whether the game is in manual placement mode.</summary>
+        public bool IsManualPlacementMode { get; set; }
+
         [SerializeField] protected int _selectedBallId;
         [SerializeField] protected int _selectedCueStickId;
         [SerializeField] protected bool _frezeBallsOutsidePlayingAreaRadius = true;
@@ -64,7 +70,8 @@ namespace ibc
 
         protected virtual void Awake()
         {
-            _unityScene = new BilliardUnityScene() {
+            _unityScene = new BilliardUnityScene()
+            {
                 Balls = FindObjectsOfType<UnityBall>(),
                 Holes = FindObjectsOfType<UnityHole>(),
                 Cushions = FindObjectsOfType<UnityCushion>(),
@@ -87,9 +94,17 @@ namespace ibc
         {
             _state.Tick(Time.deltaTime);
 
-            foreach(var unityBall in _unityScene.Balls)
+            foreach (var unityBall in _unityScene.Balls)
             {
                 Ball ball = _state.GetTemporaryBall(unityBall.Identifier);
+
+                // 手動配置モード中の白球は物理同期をスキップ
+                if (IsManualPlacementMode && unityBall.Identifier == WhiteBallId)
+                {
+                    Debug.Log($"Manual placement mode: {unityBall.Identifier}");
+                    continue;
+                }
+
                 if (ball.Identifier != unityBall.Identifier) Debug.Log($"Mismatch {ball.Identifier} {unityBall.Identifier}");
                 if (ball.State != Ball.StateType.Normal) continue;
                 unityBall.transform.SetPositionAndRotation((float3)ball.Position, ball.Rotation);
@@ -98,8 +113,8 @@ namespace ibc
 
         protected virtual void OnPhysicsEvent(PhysicsSolver.Event ev)
         {
-            if(ev.Type != PhysicsSolver.EventType.None)
-               _cachedEvents.Add(ev);
+            if (ev.Type != PhysicsSolver.EventType.None)
+                _cachedEvents.Add(ev);
 
             if (ev.Type == PhysicsSolver.EventType.PocketCollision)
             {
@@ -193,7 +208,7 @@ namespace ibc
         /// <returns>Returns an enumerable ball identifiers</returns>
         public static IEnumerable<int> GetBallsInsidePolygon(Polygon polygon, params Ball[] balls)
         {
-            return balls.Where(b => polygon.IsPointInPolygon((float3)b.Position)).Select(t=>t.Identifier);
+            return balls.Where(b => polygon.IsPointInPolygon((float3)b.Position)).Select(t => t.Identifier);
         }
 
         /// <summary>
