@@ -767,7 +767,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _requestedSource2MatHelperClassName: 0
   _currentSource2MatHelperClassInterfaces: 1
-  _requestedDeviceName: 
+  _requestedDeviceName: 1
   _requestedWidth: 1920
   _requestedHeight: 1080
   _requestedIsFrontFacing: 0
