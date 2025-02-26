@@ -218,7 +218,7 @@ namespace OpenCVForUnity.UnityUtils.Helper
         [OpenCVForUnityRuntimeDisable]
 #endif
         [SerializeField, FormerlySerializedAs("flipHorizontal"), TooltipAttribute("Set whether to flip horizontal.")]
-        protected bool _flipHorizontal = false;
+        protected bool _flipHorizontal = true;//falseから変更
 
         /// <summary>
         /// Set whether to flip horizontal.
