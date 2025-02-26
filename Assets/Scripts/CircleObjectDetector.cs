@@ -4,7 +4,7 @@ using System.Linq;
 using UnityEngine.Events;
 
 /// <summary>
-/// NDI映像内の円形領域（WhiteCircle）に入った物体を検出するコンポーネント
+/// NDI映像内の円形領域（WhiteCircle）に入った棒状の物体を検出するコンポーネント
 /// </summary>
 public class CircleObjectDetector : MonoBehaviour
 {
@@ -15,33 +15,28 @@ public class CircleObjectDetector : MonoBehaviour
     [Tooltip("検出間隔（秒）")]
     public float detectionInterval = 0.1f;
 
-    [Header("検出パラメータ")]
-    [Tooltip("検出する色相の範囲（最小値）")]
-    [Range(0f, 1f)]
-    public float hueMin = 0f;
-
-    [Tooltip("検出する色相の範囲（最大値）")]
-    [Range(0f, 1f)]
-    public float hueMax = 1f;
-
-    [Tooltip("検出する彩度の範囲（最小値）")]
-    [Range(0f, 1f)]
-    public float saturationMin = 0.5f;
-
-    [Tooltip("検出する彩度の範囲（最大値）")]
-    [Range(0f, 1f)]
-    public float saturationMax = 1f;
-
-    [Tooltip("検出する明度の範囲（最小値）")]
-    [Range(0f, 1f)]
-    public float valueMin = 0.5f;
-
-    [Tooltip("検出する明度の範囲（最大値）")]
-    [Range(0f, 1f)]
-    public float valueMax = 1f;
+    [Header("棒状オブジェクト検出設定")]
+    [Tooltip("棒状と判定する最小の縦横比")]
+    [Range(1.5f, 10f)]
+    public float minAspectRatio = 3.0f; // 棒状の判定基準（縦横比）
 
     [Tooltip("検出する物体の最小サイズ（ピクセル数）")]
-    public int minObjectSize = 100;
+    public int minObjectSize = 50; // 棒状のものは小さくても検出できるように調整
+
+    [Tooltip("棒の向きを検出する精度（角度）")]
+    [Range(1f, 45f)]
+    public float orientationPrecision = 5f;
+
+    [Header("表示設定")]
+    [Tooltip("サイズ目安の表示")]
+    public bool showSizeGuide = true;
+
+    [Tooltip("サイズ目安の色")]
+    public Color guideColor = Color.yellow;
+
+    [Tooltip("サイズ目安の太さ")]
+    [Range(1, 10)]
+    public int guideThickness = 2;
 
     [Header("デバッグ")]
     [Tooltip("デバッグ表示を有効にする")]
@@ -52,11 +47,11 @@ public class CircleObjectDetector : MonoBehaviour
 
     // イベント
     [System.Serializable]
-    public class ObjectDetectedEvent : UnityEvent<Vector2, float> { }
+    public class StickDetectedEvent : UnityEvent<Vector2, float, float> { } // 位置、長さ、角度
 
     [Header("イベント")]
-    [Tooltip("物体が検出されたときに発火するイベント（位置、サイズ）")]
-    public ObjectDetectedEvent onObjectDetected = new ObjectDetectedEvent();
+    [Tooltip("棒状の物体が検出されたときに発火するイベント（位置、長さ、角度）")]
+    public StickDetectedEvent onStickDetected = new StickDetectedEvent();
 
     // 内部変数
     private float _lastDetectionTime;
@@ -71,6 +66,23 @@ public class CircleObjectDetector : MonoBehaviour
     private ComputeShader _computeShader;
     private bool _circleDetectionLogged = false;
     private bool _objectDetectionLogged = false;
+
+    // 色検出用のデフォルトHSV値（内部で使用）
+    private float hueMin = 0.5f;
+    private float hueMax = 0.7f;
+    private float saturationMin = 0.4f;
+    private float saturationMax = 1f;
+    private float valueMin = 0.3f;
+    private float valueMax = 1f;
+
+    // 棒状オブジェクトの情報
+    private struct StickInfo
+    {
+        public Vector2 position;  // 中心位置
+        public float length;      // 長さ
+        public float angle;       // 角度（ラジアン）
+        public float aspectRatio; // 縦横比
+    }
 
     void Start()
     {
@@ -88,8 +100,17 @@ public class CircleObjectDetector : MonoBehaviour
         // 検出間隔に基づいて検出を実行
         if (Time.time - _lastDetectionTime >= detectionInterval)
         {
-            DetectObjectsInCircle();
+            DetectSticksInCircle();
             _lastDetectionTime = Time.time;
+        }
+    }
+
+    void OnGUI()
+    {
+        if (showSizeGuide && _initialized && _circleObject != null)
+        {
+            // 画面上にサイズ目安を表示
+            DrawSizeGuideOnScreen();
         }
     }
 
@@ -207,9 +228,95 @@ public class CircleObjectDetector : MonoBehaviour
     }
 
     /// <summary>
-    /// 円内の物体を検出
+    /// 画面上にサイズ目安を表示
     /// </summary>
-    private void DetectObjectsInCircle()
+    private void DrawSizeGuideOnScreen()
+    {
+        if (Camera.main == null) return;
+
+        // 円の中心位置をスクリーン座標に変換
+        Vector3 screenCenter = Camera.main.WorldToScreenPoint(_circleCenter);
+        
+        // 円の半径をスクリーン座標に変換
+        float screenRadius = _circleRadius * Screen.height / 10f; // 適当なスケール係数
+        
+        // 棒の長さと幅の目安を計算
+        float stickLength = screenRadius * 0.8f; // 円の80%の長さ
+        float stickWidth = stickLength / minAspectRatio; // 縦横比から幅を計算
+        
+        // 棒の目安を描画
+        Color originalColor = GUI.color;
+        GUI.color = guideColor;
+        
+        // 中心位置
+        float centerX = screenCenter.x;
+        float centerY = Screen.height - screenCenter.y; // GUIの座標系はY軸が反転している
+        
+        // 棒の長さ方向の線
+        float halfLength = stickLength / 2;
+        DrawGuiLine(
+            new Vector2(centerX, centerY - halfLength), 
+            new Vector2(centerX, centerY + halfLength), 
+            guideThickness
+        );
+        
+        // 棒の幅方向の線
+        float halfWidth = stickWidth / 2;
+        DrawGuiLine(
+            new Vector2(centerX - halfWidth, centerY), 
+            new Vector2(centerX + halfWidth, centerY), 
+            guideThickness
+        );
+        
+        // サイズ情報のテキスト表示
+        string sizeText = $"最小サイズ: {minObjectSize}px\n最小縦横比: {minAspectRatio:F1}";
+        GUI.Label(new Rect(centerX + halfWidth + 10, centerY - 30, 200, 60), sizeText);
+        
+        GUI.color = originalColor;
+    }
+    
+    /// <summary>
+    /// GUI上に線を描画
+    /// </summary>
+    private void DrawGuiLine(Vector2 start, Vector2 end, float thickness)
+    {
+        Vector2 direction = (end - start).normalized;
+        Vector2 perpendicular = new Vector2(-direction.y, direction.x) * thickness;
+        
+        Vector3[] points = new Vector3[4];
+        points[0] = start + perpendicular;
+        points[1] = end + perpendicular;
+        points[2] = end - perpendicular;
+        points[3] = start - perpendicular;
+        
+        Texture2D texture = new Texture2D(1, 1);
+        texture.SetPixel(0, 0, guideColor);
+        texture.Apply();
+        
+        GUI.skin.box.normal.background = texture;
+        GUI.skin.box.border = new RectOffset(0, 0, 0, 0);
+        
+        Matrix4x4 matrixBackup = GUI.matrix;
+        
+        GUIUtility.RotateAroundPivot(
+            Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg,
+            start
+        );
+        
+        GUI.Box(new Rect(
+            start.x, 
+            start.y - thickness, 
+            Vector2.Distance(start, end), 
+            thickness * 2
+        ), GUIContent.none);
+        
+        GUI.matrix = matrixBackup;
+    }
+
+    /// <summary>
+    /// 円内の棒状物体を検出
+    /// </summary>
+    private void DetectSticksInCircle()
     {
         if (ndiReceiver == null || !_initialized)
             return;
@@ -225,33 +332,28 @@ public class CircleObjectDetector : MonoBehaviour
         _sourceTexture.Apply();
         RenderTexture.active = null;
 
-        // 円内のピクセルを分析
-        List<Vector2> objectPositions = AnalyzePixelsInCircle(_sourceTexture);
+        // 円内のピクセルを分析して棒状物体を検出
+        StickInfo stickInfo = AnalyzePixelsForStick(_sourceTexture);
 
-        // 検出結果の処理
-        if (objectPositions.Count > 0)
+        // 棒状物体が検出された場合
+        if (stickInfo.length > 0 && stickInfo.aspectRatio >= minAspectRatio)
         {
-            // 最大の物体を選択（この部分は要件に応じて変更可能）
-            Vector2 largestObjectPosition = objectPositions[0];
-            float objectSize = CalculateObjectSize(_sourceTexture, largestObjectPosition);
-
             // イベント発火
-            onObjectDetected.Invoke(largestObjectPosition, objectSize);
+            onStickDetected.Invoke(stickInfo.position, stickInfo.length, stickInfo.angle * Mathf.Rad2Deg);
 
             if (showDebug && !_objectDetectionLogged)
             {
-                Debug.Log($"CircleObjectDetector: 物体を検出 - 位置: {largestObjectPosition}, サイズ: {objectSize}");
+                Debug.Log($"CircleObjectDetector: 棒状物体を検出 - 位置: {stickInfo.position}, 長さ: {stickInfo.length}, 角度: {stickInfo.angle * Mathf.Rad2Deg}度, 縦横比: {stickInfo.aspectRatio}");
                 _objectDetectionLogged = true;
             }
         }
     }
 
     /// <summary>
-    /// 円内のピクセルを分析して物体の位置を検出
+    /// 円内のピクセルを分析して棒状物体の情報を取得
     /// </summary>
-    private List<Vector2> AnalyzePixelsInCircle(Texture2D texture)
+    private StickInfo AnalyzePixelsForStick(Texture2D texture)
     {
-        List<Vector2> objectPositions = new List<Vector2>();
         Color[] pixels = texture.GetPixels();
         int width = texture.width;
         int height = texture.height;
@@ -292,87 +394,80 @@ public class CircleObjectDetector : MonoBehaviour
             }
         }
 
-        // フィルタリングされたピクセルから物体を検出
-        if (filteredPixels.Count > 0)
+        // 棒状物体の情報を初期化
+        StickInfo stickInfo = new StickInfo();
+        stickInfo.length = 0;
+        stickInfo.angle = 0;
+        stickInfo.aspectRatio = 1;
+
+        // フィルタリングされたピクセルから棒状物体を検出
+        if (filteredPixels.Count >= minObjectSize)
         {
-            // 簡易的なクラスタリング（実際のアプリケーションではより高度なアルゴリズムを使用）
-            Vector2 averagePos = Vector2.zero;
+            // 中心位置を計算
+            Vector2 center = Vector2.zero;
             foreach (Vector2 pos in filteredPixels)
             {
-                averagePos += pos;
+                center += pos;
             }
-            averagePos /= filteredPixels.Count;
-            
-            // 最小サイズ以上の場合のみ検出とみなす
-            if (filteredPixels.Count >= minObjectSize)
+            center /= filteredPixels.Count;
+            stickInfo.position = center;
+
+            // 主成分分析で棒の向きを検出
+            float xx = 0, xy = 0, yy = 0;
+            foreach (Vector2 pos in filteredPixels)
             {
-                objectPositions.Add(averagePos);
-                
-                // デバッグ表示（最初の検出時のみ）
-                if (showDebug && _debugTexture != null && !_objectDetectionLogged)
-                {
-                    DrawDebugVisualization(texture, filteredPixels, averagePos);
-                }
+                Vector2 diff = pos - center;
+                xx += diff.x * diff.x;
+                xy += diff.x * diff.y;
+                yy += diff.y * diff.y;
+            }
+
+            // 共分散行列の固有値と固有ベクトルを計算
+            float det = xx * yy - xy * xy;
+            float trace = xx + yy;
+            float lambda1 = (trace + Mathf.Sqrt(trace * trace - 4 * det)) / 2;
+            float lambda2 = (trace - Mathf.Sqrt(trace * trace - 4 * det)) / 2;
+            
+            // 縦横比を計算
+            stickInfo.aspectRatio = lambda1 > lambda2 ? 
+                Mathf.Sqrt(lambda1 / Mathf.Max(0.001f, lambda2)) : 
+                Mathf.Sqrt(lambda2 / Mathf.Max(0.001f, lambda1));
+
+            // 棒の向きを計算
+            if (lambda1 > lambda2)
+            {
+                stickInfo.angle = Mathf.Atan2(lambda1 - xx, xy);
+            }
+            else
+            {
+                stickInfo.angle = Mathf.Atan2(xy, lambda2 - yy);
+            }
+
+            // 棒の長さを計算（主軸方向の最大距離）
+            float maxDist = 0;
+            Vector2 direction = new Vector2(Mathf.Cos(stickInfo.angle), Mathf.Sin(stickInfo.angle));
+            foreach (Vector2 pos in filteredPixels)
+            {
+                Vector2 diff = pos - center;
+                float dist = Mathf.Abs(Vector2.Dot(diff, direction));
+                maxDist = Mathf.Max(maxDist, dist);
+            }
+            stickInfo.length = maxDist * 2; // 中心からの距離なので2倍
+
+            // デバッグ表示（最初の検出時のみ）
+            if (showDebug && _debugTexture != null && !_objectDetectionLogged)
+            {
+                DrawStickDebugVisualization(texture, filteredPixels, stickInfo);
             }
         }
 
-        return objectPositions;
+        return stickInfo;
     }
 
     /// <summary>
-    /// 物体のサイズを計算
+    /// 棒状物体のデバッグ表示を描画
     /// </summary>
-    private float CalculateObjectSize(Texture2D texture, Vector2 position)
-    {
-        // 簡易的なサイズ計算（実際のアプリケーションではより高度な方法を使用）
-        Color[] pixels = texture.GetPixels();
-        int width = texture.width;
-        int height = texture.height;
-        int count = 0;
-        int maxRadius = Mathf.Min(width, height) / 4; // 最大探索半径
-
-        for (int r = 1; r <= maxRadius; r++)
-        {
-            bool foundBoundary = false;
-            
-            // 円周上のピクセルをチェック
-            for (int angle = 0; angle < 360; angle += 10)
-            {
-                int x = Mathf.RoundToInt(position.x + r * Mathf.Cos(angle * Mathf.Deg2Rad));
-                int y = Mathf.RoundToInt(position.y + r * Mathf.Sin(angle * Mathf.Deg2Rad));
-                
-                if (x >= 0 && x < width && y >= 0 && y < height)
-                {
-                    Color pixelColor = pixels[y * width + x];
-                    Color.RGBToHSV(pixelColor, out float h, out float s, out float v);
-                    
-                    bool hueInRange = (hueMin <= hueMax) ? 
-                        (h >= hueMin && h <= hueMax) : 
-                        (h >= hueMin || h <= hueMax);
-                    
-                    if (!(hueInRange && 
-                          s >= saturationMin && s <= saturationMax && 
-                          v >= valueMin && v <= valueMax))
-                    {
-                        foundBoundary = true;
-                        break;
-                    }
-                }
-            }
-            
-            if (foundBoundary)
-            {
-                return r;
-            }
-        }
-        
-        return maxRadius;
-    }
-
-    /// <summary>
-    /// デバッグ表示を描画
-    /// </summary>
-    private void DrawDebugVisualization(Texture2D sourceTexture, List<Vector2> filteredPixels, Vector2 objectCenter)
+    private void DrawStickDebugVisualization(Texture2D sourceTexture, List<Vector2> filteredPixels, StickInfo stickInfo)
     {
         if (!showDebug || debugTexture == null)
             return;
@@ -392,9 +487,9 @@ public class CircleObjectDetector : MonoBehaviour
             }
         }
         
-        // 物体の中心を赤い十字で表示
-        int centerX = Mathf.RoundToInt(objectCenter.x);
-        int centerY = Mathf.RoundToInt(objectCenter.y);
+        // 棒の中心を赤い十字で表示
+        int centerX = Mathf.RoundToInt(stickInfo.position.x);
+        int centerY = Mathf.RoundToInt(stickInfo.position.y);
         int crossSize = 10;
         
         for (int i = -crossSize; i <= crossSize; i++)
@@ -414,10 +509,66 @@ public class CircleObjectDetector : MonoBehaviour
             }
         }
         
+        // 棒の向きを線で表示
+        float halfLength = stickInfo.length / 2;
+        Vector2 direction = new Vector2(Mathf.Cos(stickInfo.angle), Mathf.Sin(stickInfo.angle));
+        Vector2 start = stickInfo.position - direction * halfLength;
+        Vector2 end = stickInfo.position + direction * halfLength;
+        
+        // 線を描画
+        DrawLine(_debugTexture, start, end, Color.yellow, 2);
+        
         _debugTexture.Apply();
         
         // デバッグテクスチャに適用
         Graphics.Blit(_debugTexture, debugTexture);
+    }
+
+    /// <summary>
+    /// テクスチャに線を描画
+    /// </summary>
+    private void DrawLine(Texture2D texture, Vector2 start, Vector2 end, Color color, int thickness = 1)
+    {
+        int x0 = Mathf.RoundToInt(start.x);
+        int y0 = Mathf.RoundToInt(start.y);
+        int x1 = Mathf.RoundToInt(end.x);
+        int y1 = Mathf.RoundToInt(end.y);
+        
+        int dx = Mathf.Abs(x1 - x0);
+        int dy = Mathf.Abs(y1 - y0);
+        int sx = x0 < x1 ? 1 : -1;
+        int sy = y0 < y1 ? 1 : -1;
+        int err = dx - dy;
+        
+        while (true)
+        {
+            // 太さを考慮して周囲のピクセルも塗る
+            for (int tx = -thickness/2; tx <= thickness/2; tx++)
+            {
+                for (int ty = -thickness/2; ty <= thickness/2; ty++)
+                {
+                    int px = x0 + tx;
+                    int py = y0 + ty;
+                    if (px >= 0 && px < texture.width && py >= 0 && py < texture.height)
+                    {
+                        texture.SetPixel(px, py, color);
+                    }
+                }
+            }
+            
+            if (x0 == x1 && y0 == y1) break;
+            int e2 = 2 * err;
+            if (e2 > -dy)
+            {
+                err -= dy;
+                x0 += sx;
+            }
+            if (e2 < dx)
+            {
+                err += dx;
+                y0 += sy;
+            }
+        }
     }
 
     /// <summary>
@@ -445,7 +596,21 @@ public class CircleObjectDetector : MonoBehaviour
     /// <summary>
     /// 検出パラメータを動的に更新
     /// </summary>
-    public void UpdateDetectionParameters(float newHueMin, float newHueMax, float newSatMin, float newSatMax, float newValMin, float newValMax, int newMinSize)
+    public void UpdateDetectionParameters(int newMinSize, float newMinAspectRatio)
+    {
+        minObjectSize = Mathf.Max(1, newMinSize);
+        minAspectRatio = Mathf.Max(1.5f, newMinAspectRatio);
+        
+        // パラメータ更新時にログフラグをリセット
+        _objectDetectionLogged = false;
+        
+        Debug.Log($"CircleObjectDetector: 検出パラメータを更新 - MinSize:{minObjectSize}, MinAspectRatio:{minAspectRatio}");
+    }
+    
+    /// <summary>
+    /// 色検出パラメータを設定（必要な場合のみ使用）
+    /// </summary>
+    public void SetColorParameters(float newHueMin, float newHueMax, float newSatMin, float newSatMax, float newValMin, float newValMax)
     {
         hueMin = Mathf.Clamp01(newHueMin);
         hueMax = Mathf.Clamp01(newHueMax);
@@ -453,12 +618,11 @@ public class CircleObjectDetector : MonoBehaviour
         saturationMax = Mathf.Clamp01(newSatMax);
         valueMin = Mathf.Clamp01(newValMin);
         valueMax = Mathf.Clamp01(newValMax);
-        minObjectSize = Mathf.Max(1, newMinSize);
         
         // パラメータ更新時にログフラグをリセット
         _objectDetectionLogged = false;
         
-        Debug.Log($"CircleObjectDetector: 検出パラメータを更新 - H:[{hueMin}-{hueMax}], S:[{saturationMin}-{saturationMax}], V:[{valueMin}-{valueMax}], MinSize:{minObjectSize}");
+        Debug.Log($"CircleObjectDetector: 色検出パラメータを更新 - H:[{hueMin}-{hueMax}], S:[{saturationMin}-{saturationMax}], V:[{valueMin}-{valueMax}]");
     }
     
     /// <summary>

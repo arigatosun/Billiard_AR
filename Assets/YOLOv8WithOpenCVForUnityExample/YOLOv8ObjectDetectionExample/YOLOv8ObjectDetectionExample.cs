@@ -14,7 +14,6 @@ using OpenCVForUnity.UnityUtils;
 using OpenCVForUnity.UnityUtils.Helper;
 using YOLOv8WithOpenCVForUnity;
 using System.Threading;
-using UnityEngine.UI;
 using System.IO;
 
 namespace YOLOv8WithOpenCVForUnityExample
@@ -29,9 +28,9 @@ namespace YOLOv8WithOpenCVForUnityExample
     {
         [Header("Output")]
         /// <summary>
-        /// The RawImage for previewing the result.
+        /// The Quad for displaying the result.
         /// </summary>
-        public RawImage resultPreview;
+        public GameObject resultQuad;
 
         [Space(10)]
 
@@ -60,6 +59,11 @@ namespace YOLOv8WithOpenCVForUnityExample
         /// The texture.
         /// </summary>
         protected Texture2D texture;
+
+        /// <summary>
+        /// The material for the quad.
+        /// </summary>
+        protected Material quadMaterial;
 
         /// <summary>
         /// The multi source to mat helper.
@@ -92,26 +96,66 @@ namespace YOLOv8WithOpenCVForUnityExample
         // Use this for initialization
         async void Start()
         {
-            fpsMonitor = GetComponent<FpsMonitor>();
+            try
+            {
+                fpsMonitor = GetComponent<FpsMonitor>();
 
-            multiSource2MatHelper = gameObject.GetComponent<MultiSource2MatHelper>();
-            multiSource2MatHelper.outputColorFormat = Source2MatHelperColorFormat.RGBA;
+                multiSource2MatHelper = gameObject.GetComponent<MultiSource2MatHelper>();
+                if (multiSource2MatHelper == null)
+                {
+                    Debug.LogError("MultiSource2MatHelper component not found!");
+                    return;
+                }
+                multiSource2MatHelper.outputColorFormat = Source2MatHelperColorFormat.RGBA;
 
-            // Asynchronously retrieves the readable file path from the StreamingAssets directory.
-            if (fpsMonitor != null)
-                fpsMonitor.consoleText = "Preparing file access...";
+                // Asynchronously retrieves the readable file path from the StreamingAssets directory.
+                if (fpsMonitor != null)
+                    fpsMonitor.consoleText = "Preparing file access...";
 
-            // StreamingAssetsからファイルパスを取得
-            string streamingAssetsPath = Application.streamingAssetsPath;
-            if (!string.IsNullOrEmpty(classesPath))
-                classes_filepath = Path.Combine(streamingAssetsPath, classesPath);
-            if (!string.IsNullOrEmpty(modelPath))
-                model_filepath = Path.Combine(streamingAssetsPath, modelPath);
+                // StreamingAssetsからファイルパスを取得
+                string streamingAssetsPath = Application.streamingAssetsPath;
+                if (!string.IsNullOrEmpty(classesPath))
+                    classes_filepath = Path.Combine(streamingAssetsPath, classesPath);
+                if (!string.IsNullOrEmpty(modelPath))
+                    model_filepath = Path.Combine(streamingAssetsPath, modelPath);
 
-            if (fpsMonitor != null)
-                fpsMonitor.consoleText = "";
+                if (fpsMonitor != null)
+                    fpsMonitor.consoleText = "";
 
-            Run();
+                // Check if resultQuad is assigned
+                if (resultQuad == null)
+                {
+                    Debug.LogError("resultQuad is not assigned. Please assign a Quad GameObject in the inspector.");
+                    // Create a quad if not assigned
+                    resultQuad = GameObject.CreatePrimitive(PrimitiveType.Quad);
+                    resultQuad.name = "ResultQuad";
+                    resultQuad.transform.position = new Vector3(0, 0, 0);
+                    resultQuad.transform.rotation = Quaternion.Euler(0, 180, 0);
+                    Debug.Log("Created a new Quad object as resultQuad was not assigned");
+                }
+
+                // Get or create material for the quad
+                Renderer quadRenderer = resultQuad.GetComponent<Renderer>();
+                if (quadRenderer == null)
+                {
+                    Debug.LogError("Quad does not have a Renderer component.");
+                    return;
+                }
+                
+                quadMaterial = quadRenderer.material;
+                if (quadMaterial == null)
+                {
+                    quadMaterial = new Material(Shader.Find("Unlit/Texture"));
+                    quadRenderer.material = quadMaterial;
+                    Debug.Log("Created a new Material for the quad");
+                }
+
+                Run();
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogError("Error in Start: " + e.Message + "\n" + e.StackTrace);
+            }
         }
 
         // Use this for initialization
@@ -139,22 +183,46 @@ namespace YOLOv8WithOpenCVForUnityExample
         {
             Debug.Log("OnSourceToMatHelperInitialized");
 
-            Mat rgbaMat = multiSource2MatHelper.GetMat();
-
-            texture = new Texture2D(rgbaMat.cols(), rgbaMat.rows(), TextureFormat.RGBA32, false);
-
-            resultPreview.texture = texture;
-            resultPreview.GetComponent<AspectRatioFitter>().aspectRatio = (float)texture.width / texture.height;
-
-
-            if (fpsMonitor != null)
+            try
             {
-                fpsMonitor.Add("width", rgbaMat.width().ToString());
-                fpsMonitor.Add("height", rgbaMat.height().ToString());
-                fpsMonitor.Add("orientation", Screen.orientation.ToString());
-            }
+                Mat rgbaMat = multiSource2MatHelper.GetMat();
+                if (rgbaMat == null || rgbaMat.empty())
+                {
+                    Debug.LogError("rgbaMat is null or empty in OnSourceToMatHelperInitialized");
+                    return;
+                }
 
-            bgrMat = new Mat(rgbaMat.rows(), rgbaMat.cols(), CvType.CV_8UC3);
+                texture = new Texture2D(rgbaMat.cols(), rgbaMat.rows(), TextureFormat.RGBA32, false);
+
+                // Set the texture to the quad material
+                if (quadMaterial != null && resultQuad != null)
+                {
+                    quadMaterial.mainTexture = texture;
+
+                    // Adjust quad scale to match aspect ratio
+                    float aspect = (float)texture.width / texture.height;
+                    resultQuad.transform.localScale = new Vector3(aspect, 1, 1);
+                }
+                else
+                {
+                    Debug.LogWarning("quadMaterial or resultQuad is null in OnSourceToMatHelperInitialized");
+                }
+
+                if (fpsMonitor != null)
+                {
+                    fpsMonitor.Add("width", rgbaMat.width().ToString());
+                    fpsMonitor.Add("height", rgbaMat.height().ToString());
+                    fpsMonitor.Add("orientation", Screen.orientation.ToString());
+                }
+
+                if (bgrMat != null)
+                    bgrMat.Dispose();
+                bgrMat = new Mat(rgbaMat.rows(), rgbaMat.cols(), CvType.CV_8UC3);
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogError("Error in OnSourceToMatHelperInitialized: " + e.Message + "\n" + e.StackTrace);
+            }
         }
 
         /// <summary>
@@ -192,10 +260,25 @@ namespace YOLOv8WithOpenCVForUnityExample
         // Update is called once per frame
         protected virtual void Update()
         {
-            if (multiSource2MatHelper.IsPlaying() && multiSource2MatHelper.DidUpdateThisFrame())
-            {
+            if (multiSource2MatHelper == null || !multiSource2MatHelper.IsPlaying() || !multiSource2MatHelper.DidUpdateThisFrame())
+                return;
 
+            try
+            {
                 Mat rgbaMat = multiSource2MatHelper.GetMat();
+                if (rgbaMat == null || rgbaMat.empty())
+                {
+                    Debug.LogWarning("rgbaMat is null or empty");
+                    return;
+                }
+
+                if (texture == null)
+                {
+                    texture = new Texture2D(rgbaMat.cols(), rgbaMat.rows(), TextureFormat.RGBA32, false);
+                    // Set the texture to the quad material
+                    if (quadMaterial != null)
+                        quadMaterial.mainTexture = texture;
+                }
 
                 if (objectDetector == null)
                 {
@@ -204,6 +287,13 @@ namespace YOLOv8WithOpenCVForUnityExample
                 }
                 else
                 {
+                    // Check if bgrMat is initialized and matches the dimensions of rgbaMat
+                    if (bgrMat == null || bgrMat.cols() != rgbaMat.cols() || bgrMat.rows() != rgbaMat.rows())
+                    {
+                        if (bgrMat != null)
+                            bgrMat.Dispose();
+                        bgrMat = new Mat(rgbaMat.rows(), rgbaMat.cols(), CvType.CV_8UC3);
+                    }
 
                     Imgproc.cvtColor(rgbaMat, bgrMat, Imgproc.COLOR_RGBA2BGR);
 
@@ -215,13 +305,91 @@ namespace YOLOv8WithOpenCVForUnityExample
                     //tm.stop();
                     //Debug.Log("YOLOv8ObjectDetector Inference time (preprocess + infer + postprocess), ms: " + tm.getTimeMilli());
 
+                    // 検出されたクラス名をデバッグログに表示
+                    DebugDetectedClasses(results);
+
                     Imgproc.cvtColor(bgrMat, rgbaMat, Imgproc.COLOR_BGR2RGBA);
 
                     objectDetector.visualize(rgbaMat, results, false, true);
-
                 }
 
-                Utils.matToTexture2D(rgbaMat, texture);
+                if (texture != null)
+                    Utils.matToTexture2D(rgbaMat, texture);
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogError("Error in Update: " + e.Message + "\n" + e.StackTrace);
+            }
+        }
+
+        /// <summary>
+        /// 検出されたクラス名をデバッグログに出力するためのメソッド
+        /// </summary>
+        /// <param name="results">オブジェクト検出の結果</param>
+        protected void DebugDetectedClasses(Mat results)
+        {
+            if (results == null || results.empty() || results.rows() == 0)
+            {
+                return;
+            }
+
+            // 画像サイズを取得
+            Mat rgbaMat = multiSource2MatHelper.GetMat();
+            if (rgbaMat == null || rgbaMat.empty())
+            {
+                Debug.LogWarning("rgbaMat is null or empty");
+                return;
+            }
+
+            int imageWidth = rgbaMat.cols();
+            int imageHeight = rgbaMat.rows();
+
+            // whiteクラスのみを探す
+            for (int i = 0; i < results.rows(); i++)
+            {
+                float confidence = (float)results.get(i, 4)[0]; // confidence
+                int classId = (int)results.get(i, 5)[0]; // class id
+                
+                string className = objectDetector.getClassLabel(classId);
+                
+                // whiteクラスのみを表示
+                if (className.Equals("white", StringComparison.OrdinalIgnoreCase))
+                {
+                    // バウンディングボックスの座標を取得
+                    float x = (float)results.get(i, 0)[0]; // x座標
+                    float y = (float)results.get(i, 1)[0]; // y座標
+                    float width = (float)results.get(i, 2)[0]; // 幅
+                    float height = (float)results.get(i, 3)[0]; // 高さ
+                    
+                    // 画像上の座標を表示
+                    string imagePos = $"Image Position: [x={x}, y={y}, width={width}, height={height}]";
+                    
+                    // ワールド座標系への変換
+                    Vector3 worldPos = Vector3.zero;
+                    if (resultQuad != null)
+                    {
+                        // 物体の中心を計算
+                        float centerX = x + width / 2;
+                        float centerY = y + height / 2;
+                        
+                        // 画像上の相対座標を計算 (-0.5〜0.5の範囲)
+                        float relativeX = (centerX / imageWidth) - 0.5f;
+                        float relativeY = 0.5f - (centerY / imageHeight); // Y軸は上下反転
+                        
+                        // Quadのサイズと向きを考慮して位置を計算
+                        Transform quadTransform = resultQuad.transform;
+                        Vector3 quadScale = quadTransform.localScale;
+                        
+                        // Quadのローカル座標を計算
+                        Vector3 localPos = new Vector3(relativeX * quadScale.x, relativeY * quadScale.y, 0);
+                        
+                        // ローカル座標からワールド座標に変換
+                        worldPos = quadTransform.TransformPoint(localPos);
+                    }
+                    
+                    // whiteクラスの情報と位置を表示
+                    Debug.Log($"Class: white, Count: 1, {imagePos}, World Position: {worldPos}, Confidence: {confidence:F2}");
+                }
             }
         }
 

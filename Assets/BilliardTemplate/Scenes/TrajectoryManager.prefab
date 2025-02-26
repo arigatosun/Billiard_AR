@@ -1,0 +1,60 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &880202791821519799
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1802448421668887411}
+  - component: {fileID: 2293560294731699505}
+  m_Layer: 0
+  m_Name: TrajectoryManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1802448421668887411
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 880202791821519799}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2293560294731699505
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 880202791821519799}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 88ce55406fc37f44dae5b31758a647ea, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _cueController: {fileID: 0}
+  _billiard: {fileID: 0}
+  _trajectoryPrefab: {fileID: 1536574539760628240, guid: 0c95eb61e0a68ed41afdd1b8f4159f5e, type: 3}
+  _trajectoryGhostBallPrefab: {fileID: 9155132122598741515, guid: 9fffecd0c79663442a04f8b74f177f3f, type: 3}
+  _circlePrefab: {fileID: 3146382633937930097, guid: d08c33c917ce3e8458eb95984907b647, type: 3}
+  _trajectoryGhostBallScaleFactor: 1
+  _velocityFactor: 1
+  _maxVelocity: 0.5
+  _minStrikeVelocity: 0.25
+  _defaultStrikeVelocity: 0.5
+  _maxCushionBounces: 3
+  _circleRadiusMultiplier: 3
+  _physicsJobConstants: {fileID: 11400000, guid: bb31bda568750df498e5f5a9d6243b87, type: 2}
+  _physicsSolverConstants: {fileID: 11400000, guid: 275f779716d7e344f9d9450fd49e2aee, type: 2}

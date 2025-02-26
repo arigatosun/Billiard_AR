@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 1492168691366079625}
   m_Layer: 3
   m_Name: whiteBallCircle
-  m_TagString: White
+  m_TagString: WhiteCircle
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
