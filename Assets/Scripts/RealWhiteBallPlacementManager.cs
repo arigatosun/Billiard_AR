@@ -37,7 +37,6 @@ public class RealWhiteBallPlacementManager : MonoBehaviour
     [SerializeField] private bool setManualModeOnStart = true;
     [SerializeField] private bool continuousTracking = false;
     [SerializeField] private float ballY = 0f;
-    [SerializeField, Tooltip("配置確定後にYOLOv8を無効にするかどうか")] private bool disableYOLOAfterPlacement = true;
 
     private bool calibrationCompleted = false;
 
@@ -67,7 +66,10 @@ public class RealWhiteBallPlacementManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space))
         {
             Debug.Log("Space key pressed - syncing white ball position");
-            OneTimeSyncWhiteBall();
+            // YOLOとCanvasを一時的に有効化
+            TemporarilyEnableYOLOAndCanvas();
+            // 少し待ってから白ボールの位置を同期し、YOLOとCanvasを無効化
+            StartCoroutine(SyncBallAndDisableComponents());
             return;
         }
 
@@ -296,8 +298,8 @@ public class RealWhiteBallPlacementManager : MonoBehaviour
         // 追加: 最終配置を確定する際にも軌道を更新
         UpdateTrajectory();
         
-        // YOLOv8を無効化（オブジェクトを無効化）- インスペクターの設定に基づいて実行
-        if (yoloScript != null && disableYOLOAfterPlacement)
+        // YOLOv8を無効化（オブジェクトを無効化）
+        if (yoloScript != null)
         {
             yoloScript.gameObject.SetActive(false);
             Debug.Log("YOLOv8 detection object disabled after ball placement confirmed.");
@@ -324,5 +326,56 @@ public class RealWhiteBallPlacementManager : MonoBehaviour
     {
         Debug.Log("Calibration done. Ready to track or place the ball now!");
         calibrationCompleted = true;
+    }
+
+    // 追加: YOLOとCanvasを一時的に有効化するメソッド
+    private void TemporarilyEnableYOLOAndCanvas()
+    {
+        // YOLOを有効化
+        if (yoloScript != null && !yoloScript.gameObject.activeSelf)
+        {
+            yoloScript.gameObject.SetActive(true);
+            Debug.Log("YOLOv8 detection temporarily enabled for ball placement.");
+        }
+        
+        // Canvasを有効化
+        if (uiCanvas != null && !uiCanvas.gameObject.activeSelf)
+        {
+            uiCanvas.gameObject.SetActive(true);
+            Debug.Log("UI Canvas temporarily enabled for ball placement.");
+        }
+    }
+    
+    // 追加: 少し待ってから白ボールの位置を同期し、YOLOとCanvasを無効化するコルーチン
+    private IEnumerator SyncBallAndDisableComponents()
+    {
+        // YOLOの検出が安定するまで少し待つ
+        yield return new WaitForSeconds(1.0f);
+        
+        // 白ボールの位置を同期
+        OneTimeSyncWhiteBall();
+        
+        // さらに少し待ってからコンポーネントを無効化
+        yield return new WaitForSeconds(0.5f);
+        
+        // YOLOとCanvasを無効化
+        if (yoloScript != null)
+        {
+            yoloScript.gameObject.SetActive(false);
+            Debug.Log("YOLOv8 detection disabled after ball placement.");
+        }
+        
+        if (uiCanvas != null)
+        {
+            uiCanvas.gameObject.SetActive(false);
+            Debug.Log("UI Canvas disabled after ball placement.");
+        }
+        
+        // LineControllerオブジェクトを有効化
+        if (lineControllerObject != null)
+        {
+            lineControllerObject.SetActive(true);
+            Debug.Log("LineController object enabled after ball placement.");
+        }
     }
 }
