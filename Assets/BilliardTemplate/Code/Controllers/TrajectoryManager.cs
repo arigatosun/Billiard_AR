@@ -334,5 +334,18 @@ namespace ibc.controller
             _showTrajectories = false;
         }
 
+        // 追加: 外部から強制的に軌道を更新するためのパブリックメソッド
+        public void ForceUpdateTrajectory()
+        {
+            // 現在の状態を強制的に記録し直す
+            OnBilliardStableStateReached();
+            
+            // 軌道を表示
+            if (_showTrajectories)
+            {
+                ShowTrajectoriesInternal();
+                CalculateAndShowTrajectories();
+            }
+        }
     }
 }

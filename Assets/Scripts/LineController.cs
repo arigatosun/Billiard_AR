@@ -13,6 +13,9 @@ public class LineController : MonoBehaviour
     public GameObject quadObject;
     private Renderer quadRenderer;
 
+    // カメラ名を指定するためのパラメータを追加
+    public string cameraDeviceName = "Anker PowerConf C200";
+    
     // OpenCV関連
     private Mat rgbaMat;
     private Texture2D texture;
@@ -25,7 +28,11 @@ public class LineController : MonoBehaviour
     public Vector2 centerOffset = new Vector2(0, 0);
     
     // 検出領域のサイズ倍率（1.0が通常サイズ）
-    public float regionSizeMultiplier = 1.0f;
+    public float regionSizeMultiplier = 0.6f;
+    
+    // オフセット値の上昇率を追加
+    [Tooltip("ボールの位置に応じたオフセット値の上昇率（単位あたりの増加量）")]
+    public Vector2 offsetScaleFactor = new Vector2(50.0f, 60.0f);
     
     // CueControllerへの参照を追加
     public CueController cueController;
@@ -42,29 +49,66 @@ public class LineController : MonoBehaviour
     public int whiteThreshold = 200; // 白色と判定する閾値（0-255）
     
     // 検出する白色領域の最小サイズ（ピクセル数）
-    public int minWhiteAreaSize = 50;
+    public int minWhiteAreaSize = 150;
+    
+    // 検出する白色領域の最大サイズ（ピクセル数）を追加
+    public int maxWhiteAreaSize = 200;
+    
+    // 動的オフセット用の基本オフセット
+    private Vector2 baseOffset;
 
     void Start()
     {
+        // 基本オフセットを保存
+        baseOffset = centerOffset;
+        
         // Quadのレンダラーを取得
         quadRenderer = quadObject.GetComponent<Renderer>();
 
         // WebCameraをセットアップ
         WebCamDevice[] devices = WebCamTexture.devices;
-        if (devices.Length == 1)
+        if (devices.Length == 0)
         {
             Debug.LogError("Webカメラが見つかりません");
             return;
         }
 
-        // インデックス1のカメラを使用（デバイスがある場合）
-        int deviceIndex = 1;
-        if (devices.Length > deviceIndex) {
-            webCamTexture = new WebCamTexture(devices[deviceIndex].name, 1920, 1080, 30);
-        } else {
-            Debug.LogWarning("インデックス " + deviceIndex + " のデバイスが見つかりません。インデックス0を使用します。");
-            webCamTexture = new WebCamTexture(devices[0].name, 1920, 1080, 30);
+        // 利用可能なカメラの一覧をログに出力
+        Debug.Log("利用可能なカメラ一覧:");
+        foreach (WebCamDevice device in devices)
+        {
+            Debug.Log("カメラ名: " + device.name);
         }
+
+        // カメラ名が指定されている場合はその名前のカメラを使用
+        // 指定がない場合はデフォルトカメラ（最初のカメラ）を使用
+        if (!string.IsNullOrEmpty(cameraDeviceName))
+        {
+            bool foundSpecifiedCamera = false;
+            foreach (WebCamDevice device in devices)
+            {
+                if (device.name == cameraDeviceName)
+                {
+                    webCamTexture = new WebCamTexture(cameraDeviceName, 1920, 1080, 30);
+                    foundSpecifiedCamera = true;
+                    Debug.Log("指定されたカメラを使用します: " + cameraDeviceName);
+                    break;
+                }
+            }
+            
+            if (!foundSpecifiedCamera)
+            {
+                Debug.LogWarning("指定されたカメラ '" + cameraDeviceName + "' が見つかりません。デフォルトカメラを使用します。");
+                webCamTexture = new WebCamTexture(devices[0].name, 1920, 1080, 30);
+            }
+        }
+        else
+        {
+            // カメラ名が指定されていない場合はデフォルトカメラを使用
+            webCamTexture = new WebCamTexture(devices[0].name, 1920, 1080, 30);
+            Debug.Log("デフォルトカメラを使用します: " + devices[0].name);
+        }
+        
         webCamTexture.Play();
 
         // マットとテクスチャの初期化（サイズはカメラに合わせて後で更新）
@@ -100,6 +144,9 @@ public class LineController : MonoBehaviour
                 quadRenderer.material.mainTexture = texture;
             }
 
+            // WhiteBallの位置に応じてオフセットを更新
+            UpdateOffsetBasedOnBallPosition();
+
             // WebCameraの映像をMatに変換
             Utils.webCamTextureToMat(webCamTexture, rgbaMat);
             
@@ -111,6 +158,59 @@ public class LineController : MonoBehaviour
             
             // MatをTextureに変換してQuadに表示
             Utils.matToTexture2D(rgbaMat, texture);
+        }
+    }
+    
+    // ボールの位置に応じてオフセットを更新するメソッドを追加
+    void UpdateOffsetBasedOnBallPosition()
+    {
+        if (targetBall != null)
+        {
+            // ボールのワールド座標を取得
+            Vector3 ballPosition = targetBall.transform.position;
+            
+            // ワールド座標に基づいてオフセットを計算
+            // 見下ろし視点: xは左右、zは上下として扱う
+            // 原点(0,0,0)からの距離に応じてオフセットを増加させる
+            Vector2 dynamicOffset = new Vector2(
+                ballPosition.x * offsetScaleFactor.x,
+                -ballPosition.z * offsetScaleFactor.y  // Z軸方向の符号を反転
+            );
+            
+            // 基本オフセットに動的オフセットを加算
+            centerOffset = baseOffset + dynamicOffset;
+            
+            // 検出領域を更新
+            UpdateDetectionRegion();
+        }
+    }
+    
+    // 検出領域を更新するメソッド
+    void UpdateDetectionRegion()
+    {
+        if (targetBall != null)
+        {
+            Camera mainCamera = Camera.main;
+            if (mainCamera != null)
+            {
+                // 3D空間のボールの位置とサイズを取得
+                Vector3 screenPos = mainCamera.WorldToScreenPoint(targetBall.transform.position);
+                
+                // ボールのスケールを取得
+                float radius = targetBall.transform.localScale.x * 50 * regionSizeMultiplier;
+                
+                // OpenCVの座標系に変換（Y軸が逆）
+                float x = screenPos.x;
+                float y = webCamTexture.height - screenPos.y;
+                
+                // 検出領域を設定（現在のオフセットを適用）
+                regionOfInterest = new OpenCVForUnity.CoreModule.Rect(
+                    (int)(x - radius + centerOffset.x), 
+                    (int)(y - radius + centerOffset.y), 
+                    (int)(radius * 2), 
+                    (int)(radius * 2)
+                );
+            }
         }
     }
     
@@ -219,8 +319,8 @@ public class LineController : MonoBehaviour
             {
                 double area = Imgproc.contourArea(contours[i]);
                 
-                // 最小サイズ以上の輪郭のみ処理
-                if (area > minWhiteAreaSize)
+                // 最小サイズ以上かつ最大サイズ以下の輪郭のみ処理
+                if (area > minWhiteAreaSize && area < maxWhiteAreaSize)
                 {
                     // 輪郭の重心を計算
                     Moments moments = Imgproc.moments(contours[i]);
@@ -302,6 +402,8 @@ public class LineController : MonoBehaviour
             Imgproc.circle(rgbaMat, 
                 new Point(circleCenterX, circleCenterY), 
                 5, new Scalar(0, 255, 255, 255), -1);
+            
+            // オフセット情報の表示は削除
             
             // メモリ解放
             roiMat.release();
